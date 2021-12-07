@@ -1,6 +1,6 @@
 package be.sukes.adventofcode.day1
 
-class Day1Submarine {
+class Day1Sweep {
 
     fun calculateDepthIncrease(sweep : List<String>) : Int =
             sweep.map(String::toInt)

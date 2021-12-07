@@ -7,7 +7,7 @@ class FileReaderTest {
 
     @Test
     fun `get file then file exists`() {
-        val actual : List<String> = FileReader().readLines("/depthSweep.txt")
+        val actual : List<String> = FileReader().readLines("/day1/depthSweep.txt")
 
         assertThat(actual).contains("171")
     }
