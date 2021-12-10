@@ -40,7 +40,7 @@ class Day2MoveTest{
     fun `test moves - position is 15, depth is 10`() {
         val moves : List<String> = FileReader().readLines("/day2/testMoves.txt")
 
-        val actual : Submarine = Day2Move().doMoves(moves)
+        val actual : Submarine = Submarine().doMoves(moves)
 
         assertThat(actual).isEqualTo(Submarine(15, 60, 10))
     }
@@ -49,7 +49,7 @@ class Day2MoveTest{
     fun `test moves - solution = 900`() {
         val moves : List<String> = FileReader().readLines("/day2/testMoves.txt")
 
-        val actual : Int = Day2Move().doMoves(moves).solution()
+        val actual : Int = Submarine().doMoves(moves).solution()
 
         assertThat(actual).isEqualTo(900)
     }
@@ -58,7 +58,7 @@ class Day2MoveTest{
     fun `moves - position is 1944, depth is 954969`() {
         val moves : List<String> = FileReader().readLines("/day2/moves.txt")
 
-        val actual : Submarine = Day2Move().doMoves(moves)
+        val actual : Submarine = Submarine().doMoves(moves)
 
         assertThat(actual).isEqualTo(Submarine(1944, 954969, 1049))
     }
@@ -67,7 +67,7 @@ class Day2MoveTest{
     fun `moves - solution = 1856459736`() {
         val moves : List<String> = FileReader().readLines("/day2/moves.txt")
 
-        val actual : Int = Day2Move().doMoves(moves).solution()
+        val actual : Int = Submarine().doMoves(moves).solution()
 
         assertThat(actual).isEqualTo(1856459736)
     }

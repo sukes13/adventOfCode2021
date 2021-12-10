@@ -1,18 +1,13 @@
 package be.sukes.adventofcode.day2
 
-class Day2Move {
-    fun doMoves(moves: List<String>): Submarine {
-        var submarine = Submarine()
-        moves.forEach {
-            submarine = submarine.doMove(it)
-        }
-        return submarine
-    }
-}
-
 data class Submarine(val position: Int = 0,
                      val depth: Int = 0,
                      val aim: Int = 0){
+
+    fun doMoves(moves: List<String>): Submarine =
+            moves.fold(Submarine()) {
+                submarine , move -> submarine.doMove(move)
+            }
 
     fun doMove(move: String): Submarine {
         when(val command = move.asCommand()){
