@@ -14,32 +14,33 @@ data class Submarine(val position: Int = 0,
                      val depth: Int = 0,
                      val aim: Int = 0){
 
-    fun doMove(move: String): Submarine = move.asCommand().execute(this)
+    fun doMove(move: String): Submarine {
+        when(val command = move.asCommand()){
+            is MoveForward -> return this.moveHorizontal(command.value)
+                                         .moveVertical(command.value)
+            is AimUp -> return this.aimUp(command.value)
+            is AimDown -> return this.aimDown(command.value)
+        }
+        throw IllegalMoveException()
+    }
+    private fun moveHorizontal(value: Int): Submarine =
+            copy(position = position.plus(value))
+    private fun moveVertical(value: Int): Submarine =
+            copy(depth = depth.plus(aim.times(value)))
+    private fun aimUp(value: Int): Submarine =
+            copy(aim = aim.minus(value))
+    private fun aimDown(value: Int): Submarine =
+            copy(aim = aim.plus(value))
 
-    internal fun moveHorizontal(value: Int): Submarine = copy(position = position.plus(value))
-    internal fun moveVertical(value: Int): Submarine = copy(depth = depth + aim.times(value))
-    internal fun aimUp(value: Int): Submarine = copy(aim = aim.minus(value))
-    internal fun aimDown(value: Int): Submarine = copy(aim = aim.plus(value))
-
-    fun solution(): Int = position * depth
+    fun solution(): Int = position.times(depth)
 }
 
 interface MoveCommand{
-    fun execute(submarine: Submarine) : Submarine
+    val value: Int
 }
-class MoveForward(val value: Int) : MoveCommand {
-    override fun execute(submarine: Submarine) : Submarine =
-            submarine.moveHorizontal(value)
-                     .moveVertical(value)
-}
-class AimUp(val value: Int) : MoveCommand {
-    override fun execute(submarine: Submarine) : Submarine =
-            submarine.aimUp(value)
-}
-class AimDown(val value: Int) : MoveCommand {
-    override fun execute(submarine: Submarine) : Submarine =
-            submarine.aimDown(value)
-}
+class MoveForward(override val value: Int) : MoveCommand
+class AimUp(override val value: Int) : MoveCommand
+class AimDown(override val value: Int) : MoveCommand
 
 fun String.asCommand(): MoveCommand {
     val (command,value) = this.trim().split(" ")
