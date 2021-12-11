@@ -54,5 +54,33 @@ class Day3DiagnosticsTest {
         assertThat(actual.decimal).isEqualTo(23)
     }
 
+    @Test
+    fun `test diag - findCO2Scrubber - = 10110`() {
+        val diag = FileReader().readLines("/day3/testDiagnostics.txt")
+
+        val actual = Day3PowerDiagnostics().findCO2Scrubber(diag)
+
+        assertThat(actual.binary).isEqualTo("01010")
+        assertThat(actual.decimal).isEqualTo(10)
+    }
+
+    @Test
+    fun `test diag - lifeSupport - = 230`() {
+        val diag = FileReader().readLines("/day3/testDiagnostics.txt")
+
+        val actual = Day3PowerDiagnostics().lifeSupport(diag)
+
+        assertThat(actual).isEqualTo(230)
+    }
+
+    @Test
+    fun `diag - lifeSupport - = solution = 5852595`() {
+        val diag = FileReader().readLines("/day3/diagnostics.txt")
+
+        val actual = Day3PowerDiagnostics().lifeSupport(diag)
+
+        assertThat(actual).isEqualTo(5852595)
+    }
+
 
 }

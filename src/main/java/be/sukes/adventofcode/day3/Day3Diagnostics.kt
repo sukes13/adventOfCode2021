@@ -1,6 +1,12 @@
 package be.sukes.adventofcode.day3
 
 class Day3PowerDiagnostics {
+    fun powerUsage(diag: List<String>): Int =
+            calculateGamma(diag).decimal.times(calculateEpsilon(diag).decimal)
+
+    fun lifeSupport(diag: List<String>): Int =
+            findOxygenGenerator(diag).decimal.times(findCO2Scrubber(diag).decimal)
+
     fun calculateGamma(diag: List<String>): Rate =
             diag.toCountedByte()
                 .map {positionInCountByte -> positionInCountByte.mostCommonValue(diag.size) }
@@ -10,15 +16,6 @@ class Day3PowerDiagnostics {
             diag.toCountedByte()
                 .map {positionInCountByte -> positionInCountByte.leastCommonValue(diag.size)}
                 .toRate()
-
-    private fun Int.mostCommonValue(numberOfBytes: Int) =
-            if (this.toDouble().div(numberOfBytes) >= 0.5) "1" else "0"
-
-    private fun Int.leastCommonValue(numberOfBytes: Int) =
-            if (this.toDouble().div(numberOfBytes) > 0.5) "0" else "1"
-
-    fun powerUsage(diag: List<String>): Int =
-            calculateGamma(diag).decimal.times(calculateEpsilon(diag).decimal)
 
     fun findOxygenGenerator(diag: List<String>): Rate {
         var matchingBytes = diag
@@ -34,9 +31,30 @@ class Day3PowerDiagnostics {
         return Rate(matchingBytes.first())
     }
 
+    fun findCO2Scrubber(diag: List<String>): Rate {
+        var matchingBytes = diag
+        var i = 0
+        while(matchingBytes.size > 1){
+            val leastCommonAtIndex = matchingBytes.toCountedByte()[i]
+                                                        .leastCommonValue(matchingBytes.size)
+            matchingBytes = matchingBytes.filter {
+                byte -> byte.chunked(1)[i].equals(leastCommonAtIndex)
+            }
+            i++
+        }
+        return Rate(matchingBytes.first())
+    }
+
+    private fun Int.mostCommonValue(numberOfBytes: Int) =
+            if (hasMoreOnes(numberOfBytes)) "1" else "0"
+
+    private fun Int.leastCommonValue(numberOfBytes: Int) =
+            if (hasMoreOnes(numberOfBytes)) "0" else "1"
+
+    private fun Int.hasMoreOnes(numberOfBytes: Int) =
+            this.toDouble().div(numberOfBytes) >= 0.5
+
 }
-
-
 
 
 private fun List<String>.toCountedByte(): List<Int> {
