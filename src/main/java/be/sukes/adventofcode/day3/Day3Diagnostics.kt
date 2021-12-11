@@ -18,24 +18,10 @@ class Day3PowerDiagnostics {
                 .toRate()
 
     fun findOxygenGenerator(diag: List<String>) =
-            findMatchingByte(diag) { numberOfBytes -> this.mostCommonValue(numberOfBytes)}
+            diag.findMatchingByte { numberOfBytes -> this.mostCommonValue(numberOfBytes)}
 
     fun findCO2Scrubber(diag: List<String>) =
-            findMatchingByte(diag) { numberOfBytes -> this.leastCommonValue(numberOfBytes)}
-
-
-    private fun findMatchingByte(diag: List<String>, preference: Int.(size: Int) -> String): Rate {
-        var matchingBytes = diag
-        var i = 0
-        while(matchingBytes.size > 1){
-            val preferenceAtIndex = matchingBytes.toCountedByte()[i].preference(matchingBytes.size)
-            matchingBytes = matchingBytes.filter {byte ->
-                byte.chunked(1)[i] == preferenceAtIndex
-            }
-            i++
-        }
-        return Rate(matchingBytes.first())
-    }
+            diag.findMatchingByte { numberOfBytes -> this.leastCommonValue(numberOfBytes)}
 
     private fun List<String>.toCountedByte(): List<Int> {
         var countList = List(this.first().length){0}
@@ -46,6 +32,19 @@ class Day3PowerDiagnostics {
                     }
         }
         return countList
+    }
+
+    private fun List<String>.findMatchingByte(preference: Int.(size: Int) -> String): Rate {
+        var matchingBytes = this
+        var i = 0
+        while(matchingBytes.size > 1){
+            val preferenceAtIndex = matchingBytes.toCountedByte()[i].preference(matchingBytes.size)
+            matchingBytes = matchingBytes.filter {byte ->
+                byte.chunked(1)[i] == preferenceAtIndex
+            }
+            i++
+        }
+        return Rate(matchingBytes.first())
     }
 
     private fun Int.leastCommonValue(numberOfBytes: Int) =
