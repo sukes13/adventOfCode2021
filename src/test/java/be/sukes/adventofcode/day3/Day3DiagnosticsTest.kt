@@ -8,9 +8,9 @@ class Day3DiagnosticsTest {
 
     @Test
     fun `test diag - calculateGamma - gamma = 10110`() {
-        val diag : List<String> = FileReader().readLines("/day3/testDiagnostics.txt")
+        val diag = FileReader().readLines("/day3/testDiagnostics.txt")
 
-        val actual : Rate = Day3PowerDiagnostics().calculateGamma(diag)
+        val actual = Day3PowerDiagnostics().calculateGamma(diag)
 
         assertThat(actual.binary).isEqualTo("10110")
         assertThat(actual.decimal).isEqualTo(22)
@@ -18,9 +18,9 @@ class Day3DiagnosticsTest {
 
     @Test
     fun `test diag - calculateEpsilon - epsilon = 01001`() {
-        val diag : List<String> = FileReader().readLines("/day3/testDiagnostics.txt")
+        val diag = FileReader().readLines("/day3/testDiagnostics.txt")
 
-        val actual : Rate = Day3PowerDiagnostics().calculateEpsilon(diag)
+        val actual = Day3PowerDiagnostics().calculateEpsilon(diag)
 
         assertThat(actual.binary).isEqualTo("01001")
         assertThat(actual.decimal).isEqualTo(9)
@@ -28,18 +28,18 @@ class Day3DiagnosticsTest {
 
     @Test
     fun `test diag - powerUsage - powerUsage = 198`() {
-        val diag : List<String> = FileReader().readLines("/day3/testDiagnostics.txt")
+        val diag = FileReader().readLines("/day3/testDiagnostics.txt")
 
-        val actual : Int = Day3PowerDiagnostics().powerUsage(diag)
+        val actual = Day3PowerDiagnostics().powerUsage(diag)
 
         assertThat(actual).isEqualTo(198)
     }
 
     @Test
     fun `diag - powerUsage - powerUsage = 198`() {
-        val diag : List<String> = FileReader().readLines("/day3/diagnostics.txt")
+        val diag = FileReader().readLines("/day3/diagnostics.txt")
 
-        val actual : Int = Day3PowerDiagnostics().powerUsage(diag)
+        val actual = Day3PowerDiagnostics().powerUsage(diag)
 
         assertThat(actual).isEqualTo(3923414)
     }

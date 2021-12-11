@@ -2,28 +2,29 @@ package be.sukes.adventofcode.day3
 
 class Day3PowerDiagnostics {
     fun calculateGamma(diag: List<String>): Rate =
-            diag.toCountedBit()
-                .map { if (hasMoreOnes(it, diag.size)) "1" else "0"}
+            diag.toCountedByte()
+                .map {positionInCountByte -> if (positionInCountByte.hasMoreOnes(diag.size)) "1" else "0"}
                 .toRate()
 
     fun calculateEpsilon(diag: List<String>): Rate =
-            diag.toCountedBit()
-                .map {if (hasMoreOnes(it, diag.size)) "0" else "1"}
+            diag.toCountedByte()
+                .map {positionInCountByte -> if (positionInCountByte.hasMoreOnes(diag.size)) "0" else "1"}
                 .toRate()
 
-    private fun hasMoreOnes(it: Int, diag: Int) = it.toDouble().div(diag) > 0.5
+    private fun Int.hasMoreOnes(numberOfBytes: Int): Boolean = this.toDouble().div(numberOfBytes) > 0.5
 
     fun powerUsage(diag: List<String>): Int =
             calculateGamma(diag).decimal.times(calculateEpsilon(diag).decimal)
 
 }
 
-private fun List<String>.toCountedBit(): List<Int> {
-    var countList: List<Int> = List(this.first().length) { index -> 0}
-    this.forEach { bit ->
-        countList = bit.chunked(1).zip(countList) { digit, col ->
-            if (digit == "1") col.plus(1) else col
-        }
+private fun List<String>.toCountedByte(): List<Int> {
+    var countList = List(this.first().length){0}
+    this.forEach { byte ->
+        countList = byte.chunked(1)
+                        .zip(countList) { bit, positionInCountByte ->
+                            if (bit == "1") positionInCountByte.plus(1) else positionInCountByte
+                         }
     }
     return countList
 }
