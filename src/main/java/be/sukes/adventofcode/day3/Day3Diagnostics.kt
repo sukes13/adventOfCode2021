@@ -9,19 +9,19 @@ class Day3PowerDiagnostics {
 
     fun calculateGamma(diag: List<String>) =
             diag.toCountedByte()
-                .map {positionInCountByte -> positionInCountByte.mostCommonValue(diag.size) }
+                .map {it.leastCommonValue(diag.size) }
                 .toRate()
 
     fun calculateEpsilon(diag: List<String>) =
             diag.toCountedByte()
-                .map {positionInCountByte -> positionInCountByte.leastCommonValue(diag.size)}
+                .map { it.leastCommonValue(diag.size)}
                 .toRate()
 
     fun findOxygenGenerator(diag: List<String>) =
-            diag.findMatchingByte { numberOfBytes -> this.mostCommonValue(numberOfBytes)}
+            diag.findMatchingByte { this.mostCommonValue(it)}
 
     fun findCO2Scrubber(diag: List<String>) =
-            diag.findMatchingByte { numberOfBytes -> this.leastCommonValue(numberOfBytes)}
+            diag.findMatchingByte { this.leastCommonValue(it)}
 
     private fun List<String>.toCountedByte(): List<Int> {
         var countList = List(this.first().length){0}
