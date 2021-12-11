@@ -9,7 +9,7 @@ class Day3PowerDiagnostics {
 
     fun calculateGamma(diag: List<String>) =
             diag.toCountedByte()
-                .map {it.leastCommonValue(diag.size) }
+                .map {it.mostCommonValue(diag.size) }
                 .toRate()
 
     fun calculateEpsilon(diag: List<String>) =
