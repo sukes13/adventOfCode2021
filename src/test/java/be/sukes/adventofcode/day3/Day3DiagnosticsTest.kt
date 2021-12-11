@@ -44,5 +44,15 @@ class Day3DiagnosticsTest {
         assertThat(actual).isEqualTo(3923414)
     }
 
+    @Test
+    fun `test diag - findOxygenGenerator - = 10110`() {
+        val diag = FileReader().readLines("/day3/testDiagnostics.txt")
+
+        val actual = Day3PowerDiagnostics().findOxygenGenerator(diag)
+
+        assertThat(actual.binary).isEqualTo("10111")
+        assertThat(actual.decimal).isEqualTo(23)
+    }
+
 
 }
