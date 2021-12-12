@@ -10,7 +10,7 @@ class Day4BingoTest {
     fun `create BingoCards - matching rows for first card`() {
         val cardsString = FileReader().readLines("/day4/testCards.txt")
 
-        val actual = parseCards(cardsString)
+        val actual = cardsString.asBingoCards()
 
         assertThat(actual).hasSize(3)
         assertThat(actual[0].rows).contains(ScoredLine(listOf(22.toCardNumber(),13.toCardNumber(),17.toCardNumber(),11.toCardNumber(),0.toCardNumber())),
@@ -25,7 +25,7 @@ class Day4BingoTest {
     fun `draw 8 - 8 is marked, 23 is not, no bingo`() {
         val cardsString = FileReader().readLines("/day4/testCards.txt")
 
-        val bingoCard = parseCards(cardsString)[0]
+        val bingoCard = cardsString.asBingoCards()[0]
         val actual = bingoCard.draw(8)
 
         assertThat(bingoCard.rows[1].numbers).contains(CardNumber(8,true),
@@ -36,7 +36,7 @@ class Day4BingoTest {
     @Test
     fun `draw entire row - check if Bingo - bingo`() {
         val cardsString = FileReader().readLines("/day4/testCards.txt")
-        val bingoCard = parseCards(cardsString)[0]
+        val bingoCard = cardsString.asBingoCards()[0]
 
         assertThat(bingoCard.draw(8)).isFalse()
         assertThat(bingoCard.draw(2)).isFalse()
@@ -48,7 +48,7 @@ class Day4BingoTest {
     @Test
     fun `draw entire column - check if Bingo - bingo`() {
         val cardsString = FileReader().readLines("/day4/testCards.txt")
-        val bingoCard = parseCards(cardsString)[0]
+        val bingoCard = cardsString.asBingoCards()[0]
 
         assertThat(bingoCard.draw(13)).isFalse()
         assertThat(bingoCard.draw(2)).isFalse()
@@ -59,15 +59,12 @@ class Day4BingoTest {
 
     @Test
     fun `test draw - score = 188`() {
-//        val cardsString = FileReader().readLines("/day4/testCards.txt")
-//
-//        val actual = parseCards(cardsString)[0].drawList(listOf("13","2","9","10","12"))
-//
-//        assertThat(actual.isBingo()).isTrue()
+        val cardsString = FileReader().readLines("/day4/testCards.txt")
+        val drawsString = FileReader().readLines("/day4/testDraw.txt")
+
+        val actual = Day4Bingo().play(cardsString,drawsString[0])
+
+        assertThat(actual).isEqualTo(4512)
     }
 
-    private fun parseCards(cardsString: List<String>): List<BingoCard> =
-            cardsString.filter { it.isNotBlank() }
-                    .windowed(5,5)
-                    .map { BingoCard(it) }
 }

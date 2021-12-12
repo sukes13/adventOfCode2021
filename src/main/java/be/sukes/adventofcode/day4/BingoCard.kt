@@ -5,15 +5,16 @@ package be.sukes.adventofcode.day4
 class BingoCard(cardString: List<String>) {
     val rows: List<ScoredLine> = toCardRowList(cardString)
 
-    fun isBingo() =
-            rows.isBingo() or rows.toColumns().isBingo()
-
     fun draw(inputNumber: Int): Boolean {
         this.rows.forEach{ row ->
             row.markIfPresent(inputNumber)
         }
         return this.isBingo()
     }
+
+    private fun isBingo() =
+            rows.isBingo() or rows.toColumns().isBingo()
+
     private fun toCardRowList(cardString: List<String>) =
         cardString.map { line -> ScoredLine(line.split("  "," ")
                                                  .filter { it.isNotBlank() }
@@ -29,10 +30,17 @@ class BingoCard(cardString: List<String>) {
         return columns
     }
 
-}
+    fun unMarkedScore() : Int =
+        rows.flatMap { it.numbers }
+                .filter { !it.marked }
+                .map { it.value }
+            .sum()
 
-private fun List<ScoredLine>.isBingo(): Boolean =
-        this.map { it.allMarked() }.any { it }
+
+    private fun List<ScoredLine>.isBingo(): Boolean =
+            this.map { it.allMarked() }.any { it }
+
+}
 
 class ScoredLine(val numbers: List<CardNumber> ) {
     fun markIfPresent( inputNumber: Int) {
