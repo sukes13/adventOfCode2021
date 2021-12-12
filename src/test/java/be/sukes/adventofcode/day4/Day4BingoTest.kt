@@ -8,12 +8,13 @@ import org.junit.jupiter.api.Test
 class Day4BingoTest {
 
     @Test
-    fun `create BingoCard - matching rows`() {
-        val cardString = FileReader().readLines("/day4/testCards.txt").take(5)
+    fun `create BingoCards - matching rows for first card`() {
+        val cardsString = FileReader().readLines("/day4/testCards.txt")
 
-        val actual = BingoCard(cardString)
+        val actual = parseCardsString(cardsString)
 
-        assertThat(actual.rows).contains(CardRow(listOf("22","13","17","11","0")),
+        assertThat(actual).hasSize(3)
+        assertThat(actual[0].rows).contains(CardRow(listOf("22","13","17","11","0")),
                                          CardRow(listOf("8","2","23","4","24")),
                                          CardRow(listOf("21","9","14","16","7")),
                                          CardRow(listOf("6","10","3","18","5")),
@@ -21,4 +22,9 @@ class Day4BingoTest {
         )
 
     }
+
+    private fun parseCardsString(cardsString: List<String>): List<BingoCard> =
+            cardsString.filter { it.isNotBlank() }
+                    .windowed(5,5)
+                    .map { BingoCard(it) }
 }
