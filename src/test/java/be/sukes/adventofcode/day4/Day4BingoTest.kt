@@ -25,29 +25,36 @@ class Day4BingoTest {
     fun `draw 8 - 8 is marked, 23 is not, no bingo`() {
         val cardsString = FileReader().readLines("/day4/testCards.txt")
 
-        val actual = parseCards(cardsString)[0].drawList(listOf("8"))
+        val bingoCard = parseCards(cardsString)[0]
+        val actual = bingoCard.draw(8)
 
-        assertThat(actual.rows[1].numbers).contains(CardNumber(8,true),
+        assertThat(bingoCard.rows[1].numbers).contains(CardNumber(8,true),
                                                     CardNumber(23,false))
-        assertThat(actual.isBingo()).isFalse()
+        assertThat(actual).isFalse()
     }
 
     @Test
-    fun `draw "22","13","17","11","0" - check if Bingo - bingo`() {
+    fun `draw entire row - check if Bingo - bingo`() {
         val cardsString = FileReader().readLines("/day4/testCards.txt")
+        val bingoCard = parseCards(cardsString)[0]
 
-        val actual = parseCards(cardsString)[0].drawList(listOf("22","13","17","11","0"))
-
-        assertThat(actual.isBingo()).isTrue()
+        assertThat(bingoCard.draw(8)).isFalse()
+        assertThat(bingoCard.draw(2)).isFalse()
+        assertThat(bingoCard.draw(23)).isFalse()
+        assertThat(bingoCard.draw(4)).isFalse()
+        assertThat(bingoCard.draw(24)).isTrue()
     }
 
     @Test
-    fun `draw "13","2","9","10","12" - check if Bingo - bingo`() {
+    fun `draw entire column - check if Bingo - bingo`() {
         val cardsString = FileReader().readLines("/day4/testCards.txt")
+        val bingoCard = parseCards(cardsString)[0]
 
-        val actual = parseCards(cardsString)[0].drawList(listOf("13","2","9","10","12"))
-
-        assertThat(actual.isBingo()).isTrue()
+        assertThat(bingoCard.draw(13)).isFalse()
+        assertThat(bingoCard.draw(2)).isFalse()
+        assertThat(bingoCard.draw(9)).isFalse()
+        assertThat(bingoCard.draw(10)).isFalse()
+        assertThat(bingoCard.draw(12)).isTrue()
     }
 
     @Test

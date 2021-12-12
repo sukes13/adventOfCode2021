@@ -3,21 +3,17 @@ package be.sukes.adventofcode.day4
 
 
 class BingoCard(cardString: List<String>) {
-    val rows : List<ScoredLine>  = toCardRowList(cardString)
-
-    fun drawList(drawList: List<String>): BingoCard {
-        drawList.forEach { this.draw(it) }
-        return this
-    }
+    val rows: List<ScoredLine> = toCardRowList(cardString)
 
     fun isBingo() =
             rows.isBingo() or rows.toColumns().isBingo()
 
-    private fun draw(inputNumber: String) =
-        this.rows.forEach { row ->
+    fun draw(inputNumber: Int): Boolean {
+        this.rows.forEach{ row ->
             row.markIfPresent(inputNumber)
         }
-
+        return this.isBingo()
+    }
     private fun toCardRowList(cardString: List<String>) =
         cardString.map { line -> ScoredLine(line.split("  "," ")
                                                  .filter { it.isNotBlank() }
@@ -39,9 +35,9 @@ private fun List<ScoredLine>.isBingo(): Boolean =
         this.map { it.allMarked() }.any { it }
 
 class ScoredLine(val numbers: List<CardNumber> ) {
-    fun markIfPresent( inputNumber: String) {
+    fun markIfPresent( inputNumber: Int) {
         numbers.forEach {number ->
-            if (number.value == inputNumber.toInt())
+            if (number.value == inputNumber)
                 number.mark()
         }
     }
