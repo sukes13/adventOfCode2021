@@ -1,7 +1,5 @@
 package be.sukes.adventofcode.day4
 
-import be.sukes.adventofcode.day4.BingoCard.CardNumber
-import be.sukes.adventofcode.day4.BingoCard.CardRow
 import be.sukes.adventofcode.import.FileReader
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -15,32 +13,23 @@ class Day4BingoTest {
         val actual = parseCards(cardsString)
 
         assertThat(actual).hasSize(3)
-        assertThat(actual[0].rows).contains(CardRow(listOf("22","13","17","11","0")),
-                                         CardRow(listOf("8","2","23","4","24")),
-                                         CardRow(listOf("21","9","14","16","7")),
-                                         CardRow(listOf("6","10","3","18","5")),
-                                         CardRow(listOf("1","12","20","15","19"))
-        )
-
+        assertThat(actual[0].rows).contains(ScoredLine(listOf(22.toCardNumber(),13.toCardNumber(),17.toCardNumber(),11.toCardNumber(),0.toCardNumber())),
+                                             ScoredLine(listOf(8.toCardNumber(),2.toCardNumber(),23.toCardNumber(),4.toCardNumber(),24.toCardNumber())),
+                                             ScoredLine(listOf(21.toCardNumber(),9.toCardNumber(),14.toCardNumber(),16.toCardNumber(),7.toCardNumber())),
+                                             ScoredLine(listOf(6.toCardNumber(),10.toCardNumber(),3.toCardNumber(),18.toCardNumber(),5.toCardNumber())),
+                                             ScoredLine(listOf(1.toCardNumber(),12.toCardNumber(),20.toCardNumber(),15.toCardNumber(),19.toCardNumber()))
+                                             )
     }
 
     @Test
-    fun `draw 8 - 8 is marked, 23 is not`() {
+    fun `draw 8 - 8 is marked, 23 is not, no bingo`() {
         val cardsString = FileReader().readLines("/day4/testCards.txt")
 
-        val actual = parseCards(cardsString)[0].draw("8")
+        val actual = parseCards(cardsString)[0].drawList(listOf("8"))
 
         assertThat(actual.rows[1].numbers).contains(CardNumber(8,true),
                                                     CardNumber(23,false))
-    }
-
-    @Test
-    fun `draw 8 - check if Bingo - no bingo`() {
-        val cardsString = FileReader().readLines("/day4/testCards.txt")
-
-        val actual = parseCards(cardsString)[0].draw("8")
-
-        assertThat(actual.isBingo()).isFalse
+        assertThat(actual.isBingo()).isFalse()
     }
 
     @Test
@@ -49,7 +38,25 @@ class Day4BingoTest {
 
         val actual = parseCards(cardsString)[0].drawList(listOf("22","13","17","11","0"))
 
-        assertThat(actual.isBingo()).isTrue
+        assertThat(actual.isBingo()).isTrue()
+    }
+
+    @Test
+    fun `draw "13","2","9","10","12" - check if Bingo - bingo`() {
+        val cardsString = FileReader().readLines("/day4/testCards.txt")
+
+        val actual = parseCards(cardsString)[0].drawList(listOf("13","2","9","10","12"))
+
+        assertThat(actual.isBingo()).isTrue()
+    }
+
+    @Test
+    fun `test draw - score = 188`() {
+//        val cardsString = FileReader().readLines("/day4/testCards.txt")
+//
+//        val actual = parseCards(cardsString)[0].drawList(listOf("13","2","9","10","12"))
+//
+//        assertThat(actual.isBingo()).isTrue()
     }
 
     private fun parseCards(cardsString: List<String>): List<BingoCard> =
