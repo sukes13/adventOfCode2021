@@ -8,45 +8,34 @@ class VentGrid{
     }
 
     data class GridSpot(val coordinate: Coordinate, var numberOfVents : Int = 1 ) {
-        fun sameLocation(x: Int, y: Int) =
-                (coordinate.x == x) and (coordinate.y == y)
+        fun sameLocation(coordinate: Coordinate) =
+                (this.coordinate.x == coordinate.x) and (this.coordinate.y == coordinate.y)
 
         fun addVentLine() =
-            numberOfVents ++
+                numberOfVents ++
     }
 
     /*0,2 -> 0,5*/
     private fun addVentLine(ventLine: VentLine) {
         if(ventLine is VerticalVentLine){
             for(i in ventLine.start.y .. ventLine.end.y){
-                addVerticalVentLine(ventLine, i)
+                addGridSpots(ventLine, i) { line: VentLine, index: Int -> Coordinate(line.start.x,index)}
             }
         }else if(ventLine is HorizontalVentLine){
             for(i in ventLine.start.x .. ventLine.end.x){
-                addHorizontalVentLine(ventLine, i)
+                addGridSpots(ventLine, i) { line: VentLine, index: Int -> Coordinate(index,line.start.y)}
             }
         }
     }
 
-    private fun addVerticalVentLine(ventLine: VentLine, i: Int) {
-        val spotAtLocation = grid.filter { spot -> spot.sameLocation(ventLine.start.x, i) }
+    private fun addGridSpots(ventLine: VentLine, i: Int, directionPointer : (VentLine, Int) -> Coordinate) {
+        val spotAtLocation = grid.filter { spot -> spot.sameLocation(directionPointer(ventLine,i)) }
         if (spotAtLocation.isEmpty()) {
-            grid.add(GridSpot(Coordinate(ventLine.start.x, i)))
+            grid.add(GridSpot(directionPointer(ventLine,i)))
         } else {
             spotAtLocation.first().addVentLine()
         }
     }
-
-    private fun addHorizontalVentLine(ventLine: VentLine, i: Int) {
-        val spotAtLocation = grid.filter { spot -> spot.sameLocation(i,ventLine.start.y) }
-        if (spotAtLocation.isEmpty()) {
-            grid.add(GridSpot(Coordinate(i,ventLine.start.y)))
-        } else {
-            spotAtLocation.first().addVentLine()
-        }
-    }
-
-
 }
 
 data class Coordinate(val x : Int, val y : Int)
@@ -77,9 +66,3 @@ private fun String.toCoordinates(): Sequence<Coordinate> {
                 Coordinate(x.toInt(), y.toInt())
             }
 }
-
-
-
-
-
-
