@@ -67,4 +67,13 @@ class Day4BingoTest {
         assertThat(actual).isEqualTo(4512)
     }
 
+    @Test
+    fun `draw - score = solution`() {
+        val cardsString = FileReader().readLines("/day4/cards.txt")
+        val drawsString = FileReader().readLines("/day4/draws.txt")
+
+        val actual = Day4Bingo().play(cardsString,drawsString[0])
+
+        assertThat(actual).isEqualTo(14093)
+    }
 }
