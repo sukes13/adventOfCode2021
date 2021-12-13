@@ -3,21 +3,21 @@ package be.sukes.adventofcode.day4
 class Day4Bingo{
 
     fun solution1(cardsString: List<String>,drawsString: String) : Int?{
-        val cardWinningDraw: MutableMap<Int, Pair<Int, Int>> = play(cardsString, drawsString)
+        val result: MutableMap<Int, Pair<Int, Int>> = play(cardsString, drawsString)
 
-        val winningCard = cardWinningDraw[cardWinningDraw.keys.firstOrNull()]
-        if (winningCard != null) {
-            return winningCard.first.times(winningCard.second)
+        val winningCardAndDraw = result[result.keys.firstOrNull()]
+        if (winningCardAndDraw != null) {
+            return winningCardAndDraw.first.times(winningCardAndDraw.second)
         }
         return 0
     }
 
     fun solution2(cardsString: List<String>,drawsString: String) : Int?{
-        val cardWinningDraw: MutableMap<Int, Pair<Int, Int>> = play(cardsString, drawsString)
+        val result: MutableMap<Int, Pair<Int, Int>> = play(cardsString, drawsString)
 
-        val winningCard = cardWinningDraw[cardWinningDraw.keys.lastOrNull()]
-        if (winningCard != null) {
-            return winningCard.first.times(winningCard.second)
+        val lastWinningCardAndDraw = result[result.keys.lastOrNull()]
+        if (lastWinningCardAndDraw != null) {
+            return lastWinningCardAndDraw.first.times(lastWinningCardAndDraw.second)
         }
         return 0
     }
