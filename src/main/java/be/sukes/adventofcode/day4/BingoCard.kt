@@ -1,8 +1,10 @@
 package be.sukes.adventofcode.day4
 
+import kotlin.random.Random.Default.nextInt
 
 
 class BingoCard(cardString: List<String>) {
+    val id : Int = nextInt()
     val rows: List<ScorableLine> = toCardRowList(cardString)
 
     fun draw(inputNumber: Int): Boolean {

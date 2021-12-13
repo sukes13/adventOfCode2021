@@ -13,11 +13,11 @@ class Day4BingoTest {
         val actual = cardsString.asBingoCards()
 
         assertThat(actual).hasSize(3)
-        assertThat(actual[0].rows).contains(ScoredLine(listOf(22.toCardNumber(),13.toCardNumber(),17.toCardNumber(),11.toCardNumber(),0.toCardNumber())),
-                                             ScoredLine(listOf(8.toCardNumber(),2.toCardNumber(),23.toCardNumber(),4.toCardNumber(),24.toCardNumber())),
-                                             ScoredLine(listOf(21.toCardNumber(),9.toCardNumber(),14.toCardNumber(),16.toCardNumber(),7.toCardNumber())),
-                                             ScoredLine(listOf(6.toCardNumber(),10.toCardNumber(),3.toCardNumber(),18.toCardNumber(),5.toCardNumber())),
-                                             ScoredLine(listOf(1.toCardNumber(),12.toCardNumber(),20.toCardNumber(),15.toCardNumber(),19.toCardNumber()))
+        assertThat(actual[0].rows).contains(ScorableLine(listOf(22.toCardNumber(),13.toCardNumber(),17.toCardNumber(),11.toCardNumber(),0.toCardNumber())),
+                                             ScorableLine(listOf(8.toCardNumber(),2.toCardNumber(),23.toCardNumber(),4.toCardNumber(),24.toCardNumber())),
+                                             ScorableLine(listOf(21.toCardNumber(),9.toCardNumber(),14.toCardNumber(),16.toCardNumber(),7.toCardNumber())),
+                                             ScorableLine(listOf(6.toCardNumber(),10.toCardNumber(),3.toCardNumber(),18.toCardNumber(),5.toCardNumber())),
+                                             ScorableLine(listOf(1.toCardNumber(),12.toCardNumber(),20.toCardNumber(),15.toCardNumber(),19.toCardNumber()))
                                              )
     }
 
@@ -62,7 +62,7 @@ class Day4BingoTest {
         val cardsString = FileReader().readLines("/day4/testCards.txt")
         val drawsString = FileReader().readLines("/day4/testDraw.txt")
 
-        val actual = Day4Bingo().play(cardsString,drawsString[0])
+        val actual = Day4Bingo().solution1(cardsString,drawsString[0])
 
         assertThat(actual).isEqualTo(4512)
     }
@@ -72,8 +72,28 @@ class Day4BingoTest {
         val cardsString = FileReader().readLines("/day4/cards.txt")
         val drawsString = FileReader().readLines("/day4/draws.txt")
 
-        val actual = Day4Bingo().play(cardsString,drawsString[0])
+        val actual = Day4Bingo().solution1(cardsString,drawsString[0])
 
         assertThat(actual).isEqualTo(14093)
+    }
+
+    @Test
+    fun `test draw - play2 - 1924`() {
+        val cardsString = FileReader().readLines("/day4/testCards.txt")
+        val drawsString = FileReader().readLines("/day4/testDraw.txt")
+
+        val actual = Day4Bingo().solution2(cardsString,drawsString[0])
+
+        assertThat(actual).isEqualTo(1924)
+    }
+
+    @Test
+    fun `draw - play2 - solution`() {
+        val cardsString = FileReader().readLines("/day4/cards.txt")
+        val drawsString = FileReader().readLines("/day4/draws.txt")
+
+        val actual = Day4Bingo().solution2(cardsString,drawsString[0])
+
+        assertThat(actual).isEqualTo(17388)
     }
 }

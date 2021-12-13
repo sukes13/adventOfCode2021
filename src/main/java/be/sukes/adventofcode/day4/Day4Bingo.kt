@@ -2,20 +2,37 @@ package be.sukes.adventofcode.day4
 
 class Day4Bingo{
 
-    fun play(cardsString: List<String>,drawsString: String) : Int?{
+    fun solution1(cardsString: List<String>,drawsString: String) : Int?{
+        val cardWinningDraw: MutableMap<Int, Pair<Int, Int>> = play(cardsString, drawsString)
+
+        val winningCard = cardWinningDraw[cardWinningDraw.keys.firstOrNull()]
+        if (winningCard != null) {
+            return winningCard.first.times(winningCard.second)
+        }
+        return 0
+    }
+
+    fun solution2(cardsString: List<String>,drawsString: String) : Int?{
+        val cardWinningDraw: MutableMap<Int, Pair<Int, Int>> = play(cardsString, drawsString)
+
+        val winningCard = cardWinningDraw[cardWinningDraw.keys.lastOrNull()]
+        if (winningCard != null) {
+            return winningCard.first.times(winningCard.second)
+        }
+        return 0
+    }
+
+    private fun play(cardsString: List<String>, drawsString: String): MutableMap<Int, Pair<Int, Int>> {
         val cards = cardsString.asBingoCards()
         val draws = parseDraws(drawsString)
 
-        val cardWinningDraw : MutableList<Pair<Int,Int>> = mutableListOf()
-        draws.forEach {draw ->
-            cards.forEach {card ->
-                if(card.draw(draw)) cardWinningDraw.add(Pair(card.unMarkedScore(), draw))
+        val cardWinningDraw: MutableMap<Int,Pair<Int, Int>> = mutableMapOf()
+        draws.forEach { draw ->
+            cards.forEach { card ->
+                if (card.draw(draw)) cardWinningDraw.putIfAbsent(card.id,Pair(card.unMarkedScore(), draw))
             }
         }
-
-        val winningPair = cardWinningDraw.first()
-        return winningPair.first.times(winningPair.second)
-
+        return cardWinningDraw
     }
 
     private fun parseDraws(drawsString: String): List<Int> =
