@@ -6,15 +6,15 @@ class Day4Bingo{
         val cards = cardsString.asBingoCards()
         val draws = parseDraws(drawsString)
 
-        val cardWinningDraw : MutableMap<Int,Int> = mutableMapOf()
+        val cardWinningDraw : MutableList<Pair<Int,Int>> = mutableListOf()
         draws.forEach {draw ->
             cards.forEach {card ->
-                if(card.draw(draw)) cardWinningDraw.putIfAbsent(card.unMarkedScore(),draw)
+                if(card.draw(draw)) cardWinningDraw.add(Pair(card.unMarkedScore(), draw))
             }
         }
 
-        val winningCard = cardWinningDraw.keys.first()
-        return cardWinningDraw[winningCard]?.times(winningCard)
+        val winningPair = cardWinningDraw.first()
+        return winningPair.first.times(winningPair.second)
 
     }
 
