@@ -2,25 +2,14 @@ package be.sukes.adventofcode.day4
 
 class Day4Bingo{
 
-    fun solution1(cardsString: List<String>,drawsString: String) : Int?{
-        val result: MutableMap<Int, Pair<Int, Int>> = play(cardsString, drawsString)
+    fun solution1(cardsString: List<String>,drawsString: String) : Int =
+        play(cardsString, drawsString).toSolution { this.keys.first()}
 
-        val winningCardAndDraw = result[result.keys.firstOrNull()]
-        if (winningCardAndDraw != null) {
-            return winningCardAndDraw.first.times(winningCardAndDraw.second)
-        }
-        return 0
-    }
+    fun solution2(cardsString: List<String>,drawsString: String) : Int =
+        play(cardsString, drawsString).toSolution { this.keys.last()}
 
-    fun solution2(cardsString: List<String>,drawsString: String) : Int?{
-        val result: MutableMap<Int, Pair<Int, Int>> = play(cardsString, drawsString)
-
-        val lastWinningCardAndDraw = result[result.keys.lastOrNull()]
-        if (lastWinningCardAndDraw != null) {
-            return lastWinningCardAndDraw.first.times(lastWinningCardAndDraw.second)
-        }
-        return 0
-    }
+    private fun MutableMap<Int, Pair<Int, Int>>.toSolution(preference: MutableMap<Int, Pair<Int, Int>>.() -> Int) =
+         this[this.preference()]?.calculateSolution() ?: 0
 
     private fun play(cardsString: List<String>, drawsString: String): MutableMap<Int, Pair<Int, Int>> {
         val cards = cardsString.asBingoCards()
@@ -36,11 +25,16 @@ class Day4Bingo{
     }
 
     private fun parseDraws(drawsString: String): List<Int> =
-            drawsString.split(",").map { it.toInt() }
+            drawsString.split(",")
+                       .map { it.toInt() }
+
+    private fun Pair<Int,Int>.calculateSolution(): Int =
+            this.first.times(this.second)
 
 }
 
+
 fun List<String>.asBingoCards(): List<BingoCard>  =
         this.filter { it.isNotBlank() }
-                .windowed(5,5)
-                .map { BingoCard(it) }
+            .windowed(5,5)
+            .map { BingoCard(it) }

@@ -5,7 +5,7 @@ import kotlin.random.Random.Default.nextInt
 
 class BingoCard(cardString: List<String>) {
     val id : Int = nextInt()
-    val rows: List<ScorableLine> = toCardRowList(cardString)
+    val rows: List<ScorableLine> = cardString.toCardRowList()
 
     fun draw(inputNumber: Int): Boolean {
         this.rows.forEach{ row ->
@@ -17,10 +17,11 @@ class BingoCard(cardString: List<String>) {
     private fun isBingo() =
             rows.isBingo() or rows.toColumns().isBingo()
 
-    private fun toCardRowList(cardString: List<String>) =
-        cardString.map { line -> ScorableLine(line.split("  "," ")
-                                                 .filter { it.isNotBlank() }
-                                                 .map { it.toInt().toCardNumber() } ) }
+    fun unMarkedScore() : Int =
+        rows.flatMap { it.numbers }
+                .filter { !it.marked }
+                .map { it.value }
+                .sum()
 
     private fun List<ScorableLine>.toColumns(): List<ScorableLine>  {
         val columns : ArrayList<ScorableLine> = arrayListOf()
@@ -32,15 +33,15 @@ class BingoCard(cardString: List<String>) {
         return columns
     }
 
-    fun unMarkedScore() : Int =
-        rows.flatMap { it.numbers }
-                .filter { !it.marked }
-                .map { it.value }
-            .sum()
-
 
     private fun List<ScorableLine>.isBingo(): Boolean =
-            this.map { it.allMarked() }.any { it }
+            this.map { line -> line.allMarked() }
+                .any { it }
+
+    private fun List<String>.toCardRowList(): List<ScorableLine> =
+            this.map { line -> ScorableLine(line.split("  "," ")
+                                                .filter { it.isNotBlank() }
+                                                .map { it.toInt().toCardNumber() } ) }
 
 }
 
