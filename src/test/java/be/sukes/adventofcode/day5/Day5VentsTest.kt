@@ -23,17 +23,35 @@ class Day5VentsTest {
 
     @Test
     fun `0,4 to 5,9 - toVentLines - no VentLine created`() {
-        val actual = "0,4 -> 5,9".toVentLine()
+        val actual = "0,7 -> 5,9".toVentLine()
 
         assertThat(actual).isNull()
     }
 
     @Test
-    fun `0,9 to 0,5 - toVentLines - correct (swapped) VerticalVentLine`() {
+    fun `0,9 to 0,5 - toVentLines - correct VerticalVentLine`() {
         val actual = "0,9 -> 0,5".toVentLine()
 
         assertThat(actual).isEqualTo(VerticalVentLine(Coordinate(0,9),Coordinate(0,5)))
     }
+
+    @Test
+    fun `1,1 to 3,3 - toVentLines - correct DiagonalVentLine`() {
+        val actual = "1,1 -> 3,3".toVentLine()
+
+        assertThat(actual).isEqualTo(DiagonalVentLine(Coordinate(1,1),Coordinate(3,3)))
+    }
+
+    @Test
+    fun `9,7 to 7,9 - toVentLines - correct DiagonalVentLine`() {
+        val actual = "9,7 -> 7,9".toVentLine()
+
+        assertThat(actual).isEqualTo(DiagonalVentLine(Coordinate(9,7),Coordinate(7,9)))
+    }
+
+    //--------------------------------
+    // Tracing vents tests
+    //--------------------------------
 
     @Test
     fun `create VentGrid - traceLine "0,2 to 0,5" - 4 gridSpots (vertical) added`() {

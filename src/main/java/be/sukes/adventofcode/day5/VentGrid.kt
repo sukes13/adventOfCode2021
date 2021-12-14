@@ -1,5 +1,8 @@
 package be.sukes.adventofcode.day5
 
+import kotlin.math.abs
+import kotlin.math.absoluteValue
+
 class VentGrid{
     var grid : MutableList<GridSpot> = mutableListOf()
 
@@ -24,8 +27,7 @@ class VentGrid{
         grid.filter { it.numberOfVents >= 2 }.count()
 
     data class GridSpot(val coordinate: Coordinate, var numberOfVents : Int = 1 ) {
-        fun sameLocation(coordinate: Coordinate) =
-                (this.coordinate.x == coordinate.x) and (this.coordinate.y == coordinate.y)
+        fun sameLocation(coordinate: Coordinate) = this.coordinate == coordinate
 
         fun addVentLine() =
                 numberOfVents ++
@@ -56,7 +58,11 @@ data class VerticalVentLine(override val start: Coordinate, override val end: Co
         val range = start.y.straightTo(end.y)
         return coordinatesOfRange(range){ index: Int -> Coordinate(start.x,index)}
     }
-
+}
+data class DiagonalVentLine(override val start: Coordinate, override val end: Coordinate) : VentLine(start, end) {
+    override fun coordinates(): List<Coordinate> {
+        TODO("Not yet implemented")
+    }
 }
 
 private fun Int.straightTo(end: Int) = if (this < end) this.rangeTo(end) else this.downTo(end)
@@ -78,6 +84,8 @@ private fun Pair<Coordinate,Coordinate>.mapToVentLine(): VentLine? {
         return VerticalVentLine(this.first, this.second)
     } else if(this.first.y == this.second.y){
         return HorizontalVentLine(this.first, this.second)
+    } else if((this.first.x - this.second.x).absoluteValue == (this.first.y - this.second.y).absoluteValue){
+        return DiagonalVentLine(this.first, this.second)
     }
     return null
 }
