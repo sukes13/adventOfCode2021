@@ -65,15 +65,15 @@ class Day5VentsTest {
                                             GridSpot(Coordinate(4, 0),1))
     }
 
-//    @Test
-//    fun `create VentGrid - traceLine "0,5 to 0,2" - 4 gridSpots (vertical) added`() {
-//        val ventGrid= VentGrid()
-//        ventGrid.traceLine("0,5 -> 0,2")
-//
-//        assertThat(ventGrid.grid).hasSize(4)
-//        assertThat(ventGrid.grid).contains(GridSpot(Coordinate(0, 2),1),
-//                GridSpot(Coordinate(0, 3),1),
-//                GridSpot(Coordinate(0, 4),1),
-//                GridSpot(Coordinate(0, 5),1))
-//    }
+    @Test
+    fun `create VentGrid - traceLine "0,5 to 0,2" - 4 gridSpots (vertical) added`() {
+        val ventGrid= VentGrid()
+        ventGrid.traceLine("0,5 -> 0,2")
+
+        assertThat(ventGrid.grid).hasSize(4)
+        assertThat(ventGrid.grid).contains(GridSpot(Coordinate(0, 2),1),
+                                            GridSpot(Coordinate(0, 3),1),
+                                            GridSpot(Coordinate(0, 4),1),
+                                            GridSpot(Coordinate(0, 5),1))
+    }
 }

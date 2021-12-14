@@ -46,17 +46,34 @@ data class VerticalVentLine(override val start: Coordinate, override val end: Co
 fun String.toVentLines(): List<VentLine> =
         toCoordinates()
                 .windowed(2)
-                .filter { (start, end) ->
-                    start.x == end.x || start.y == end.y
-                }
-                .map { (start, end) ->
-                    if(start.x == end.x){
-                        VerticalVentLine(start , end)
-                    }else {
-                        HorizontalVentLine(start , end)
-                    }
-                }
+                .filterOutInvalidLines()
+                .swapToPointAscending()
+                .mapToVentLine()
                 .toList()
+
+private fun Sequence<List<Coordinate>>.swapToPointAscending(): Sequence<List<Coordinate>> =
+    this.map { (start, end) ->
+        if (pointedDescending(start, end)) listOf(end, start) else listOf(start, end)
+    }
+
+private fun pointedDescending(start: Coordinate, end: Coordinate) =
+        start.x + start.y > end.x + end.y
+
+private fun Sequence<List<Coordinate>>.mapToVentLine(): Sequence<VentLine> =
+    this.map { (start, end) ->
+        if (start.x == end.x) {
+            VerticalVentLine(start, end)
+        } else {
+            HorizontalVentLine(start, end)
+        }
+    }
+
+
+private fun Sequence<List<Coordinate>>.filterOutInvalidLines(): Sequence<List<Coordinate>> =
+    this.filter { (start, end) ->
+        start.x == end.x || start.y == end.y
+    }
+
 
 private fun String.toCoordinates(): Sequence<Coordinate> {
     return this.split(",", " -> ")
