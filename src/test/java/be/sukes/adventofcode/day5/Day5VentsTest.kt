@@ -29,6 +29,13 @@ class Day5VentsTest {
     }
 
     @Test
+    fun `0,9 to 0,5 - toVentLines - correct (swapped) VerticalVentLine`() {
+        val actual = "0,9 -> 0,5".toVentLine()
+
+        assertThat(actual).isEqualTo(VerticalVentLine(Coordinate(0,9),Coordinate(0,5)))
+    }
+
+    @Test
     fun `create VentGrid - traceLine "0,2 to 0,5" - 4 gridSpots (vertical) added`() {
         val ventGrid= VentGrid()
         ventGrid.traceLine("0,2 -> 0,5")
@@ -70,10 +77,10 @@ class Day5VentsTest {
         ventGrid.traceLine("0,5 -> 0,2")
 
         assertThat(ventGrid.grid).hasSize(4)
-        assertThat(ventGrid.grid).containsExactly(GridSpot(Coordinate(0, 2),1),
-                                                    GridSpot(Coordinate(0, 3),1),
-                                                    GridSpot(Coordinate(0, 4),1),
-                                                    GridSpot(Coordinate(0, 5),1))
+        assertThat(ventGrid.grid).containsExactlyInAnyOrder(GridSpot(Coordinate(0, 2),1),
+                                                            GridSpot(Coordinate(0, 3),1),
+                                                            GridSpot(Coordinate(0, 4),1),
+                                                            GridSpot(Coordinate(0, 5),1))
     }
 
     @Test
@@ -111,12 +118,12 @@ class Day5VentsTest {
         assertThat(actual).isEqualTo(5)
     }
 
-    @Test
-    internal fun `testVents - solve - dangerSpots = solution`() {
-        val ventLineString = FileReader().readLines("/day5/vents.txt")
-
-        val actual : Int = Day5Vents().solve(ventLineString)
-
-        assertThat(actual).isEqualTo(6856)
-    }
+//    @Test
+//    internal fun `testVents - solve - dangerSpots = solution`() {
+//        val ventLineString = FileReader().readLines("/day5/vents.txt")
+//
+//        val actual : Int = Day5Vents().solve(ventLineString)
+//
+//        assertThat(actual).isEqualTo(6856)
+//    }
 }
