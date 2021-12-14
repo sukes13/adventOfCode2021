@@ -36,35 +36,22 @@ data class Coordinate(val x : Int, val y : Int)
 
 abstract class VentLine(open val start: Coordinate, open val end: Coordinate) {
     abstract fun coordinates(): List<Coordinate>
-
-    protected fun coordinatesOfRange(range : IntProgression,directionPointer : (Int) -> Coordinate): MutableList<Coordinate> {
-        val coordinates : MutableList<Coordinate> = mutableListOf()
-        for(i in range){
-            coordinates.add(directionPointer(i))
-        }
-        return coordinates
-    }
 }
 data class HorizontalVentLine(override val start: Coordinate, override val end: Coordinate) : VentLine(start, end){
-    override fun coordinates() : List<Coordinate> {
-        val range = start.x.straightTo( end.x)
-        return coordinatesOfRange(range){ index: Int -> Coordinate(index,start.y)}
-    }
+    override fun coordinates() = start.x.straightTo(end.x)
+                                                      .map{ index -> Coordinate(index,start.y)}
+
 }
 data class VerticalVentLine(override val start: Coordinate, override val end: Coordinate) : VentLine(start, end){
-    override fun coordinates() : List<Coordinate> {
-        val range = start.y.straightTo(end.y)
-        return coordinatesOfRange(range){ index: Int -> Coordinate(start.x,index)}
-    }
+    override fun coordinates() = start.y.straightTo(end.y)
+                                                      .map{ index -> Coordinate(start.x,index)}
 }
 data class DiagonalVentLine(override val start: Coordinate, override val end: Coordinate) : VentLine(start, end) {
     override fun coordinates(): List<Coordinate> {
         val horizontalRange = start.x.straightTo(end.x)
         val verticalRange = start.y.straightTo(end.y)
 
-        return horizontalRange.toList().zip(verticalRange.toList()){ x,y ->
-            Coordinate(x,y)
-        }
+        return horizontalRange.toList().zip(verticalRange.toList()){ x,y -> Coordinate(x,y) }
     }
 }
 
