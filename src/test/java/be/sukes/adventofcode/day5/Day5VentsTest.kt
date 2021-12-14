@@ -1,6 +1,7 @@
 package be.sukes.adventofcode.day5
 
 import be.sukes.adventofcode.day5.VentGrid.GridSpot
+import be.sukes.adventofcode.import.FileReader
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -8,25 +9,23 @@ class Day5VentsTest {
 
     @Test
     fun `0,9 to 5,9 - toVentLines - correct HorizontalVentLine`() {
-        val actual = "0,9 -> 5,9".toVentLines()
+        val actual = "0,9 -> 5,9".toVentLine()
 
-        assertThat(actual).hasSize(1)
-        assertThat(actual[0]).isEqualTo(HorizontalVentLine(Coordinate(0,9),Coordinate(5,9)))
+        assertThat(actual).isEqualTo(HorizontalVentLine(Coordinate(0,9),Coordinate(5,9)))
     }
 
     @Test
     fun `0,5 to 0,9 - toVentLines - correct VerticalVentLine`() {
-        val actual = "0,5 -> 0,9".toVentLines()
+        val actual = "0,5 -> 0,9".toVentLine()
 
-        assertThat(actual).hasSize(1)
-        assertThat(actual[0]).isEqualTo(VerticalVentLine(Coordinate(0,5),Coordinate(0,9)))
+        assertThat(actual).isEqualTo(VerticalVentLine(Coordinate(0,5),Coordinate(0,9)))
     }
 
     @Test
     fun `0,4 to 5,9 - toVentLines - no VentLine created`() {
-        val actual = "0,4 -> 5,9".toVentLines()
+        val actual = "0,4 -> 5,9".toVentLine()
 
-        assertThat(actual).hasSize(0)
+        assertThat(actual).isNull()
     }
 
     @Test
@@ -35,10 +34,10 @@ class Day5VentsTest {
         ventGrid.traceLine("0,2 -> 0,5")
 
         assertThat(ventGrid.grid).hasSize(4)
-        assertThat(ventGrid.grid).contains(GridSpot(Coordinate(0, 2),1),
-                                            GridSpot(Coordinate(0, 3),1),
-                                            GridSpot(Coordinate(0, 4),1),
-                                            GridSpot(Coordinate(0, 5),1))
+        assertThat(ventGrid.grid).containsExactly(GridSpot(Coordinate(0, 2),1),
+                                                    GridSpot(Coordinate(0, 3),1),
+                                                    GridSpot(Coordinate(0, 4),1),
+                                                    GridSpot(Coordinate(0, 5),1))
     }
 
     @Test
@@ -48,10 +47,10 @@ class Day5VentsTest {
         ventGrid.traceLine("0,2 -> 0,5")
 
         assertThat(ventGrid.grid).hasSize(4)
-        assertThat(ventGrid.grid).contains(GridSpot(Coordinate(0, 2),2),
-                                            GridSpot(Coordinate(0, 3),2),
-                                            GridSpot(Coordinate(0, 4),2),
-                                            GridSpot(Coordinate(0, 5),2))
+        assertThat(ventGrid.grid).containsExactly(GridSpot(Coordinate(0, 2),2),
+                                                    GridSpot(Coordinate(0, 3),2),
+                                                    GridSpot(Coordinate(0, 4),2),
+                                                    GridSpot(Coordinate(0, 5),2))
     }
 
     @Test
@@ -60,9 +59,9 @@ class Day5VentsTest {
         ventGrid.traceLine("2,0 -> 4,0")
 
         assertThat(ventGrid.grid).hasSize(3)
-        assertThat(ventGrid.grid).contains(GridSpot(Coordinate(2, 0),1),
-                                            GridSpot(Coordinate(3, 0),1),
-                                            GridSpot(Coordinate(4, 0),1))
+        assertThat(ventGrid.grid).containsExactly(GridSpot(Coordinate(2, 0),1),
+                                                GridSpot(Coordinate(3, 0),1),
+                                                GridSpot(Coordinate(4, 0),1))
     }
 
     @Test
@@ -71,9 +70,53 @@ class Day5VentsTest {
         ventGrid.traceLine("0,5 -> 0,2")
 
         assertThat(ventGrid.grid).hasSize(4)
-        assertThat(ventGrid.grid).contains(GridSpot(Coordinate(0, 2),1),
-                                            GridSpot(Coordinate(0, 3),1),
-                                            GridSpot(Coordinate(0, 4),1),
-                                            GridSpot(Coordinate(0, 5),1))
+        assertThat(ventGrid.grid).containsExactly(GridSpot(Coordinate(0, 2),1),
+                                                    GridSpot(Coordinate(0, 3),1),
+                                                    GridSpot(Coordinate(0, 4),1),
+                                                    GridSpot(Coordinate(0, 5),1))
+    }
+
+    @Test
+    fun `create VentGrid - traceLine "0,5 to 0,2" - 3 gridSpots (horizontal) with numberOfVents = 2`() {
+        val ventGrid= VentGrid()
+        ventGrid.traceLine("2,0 -> 4,0")
+        ventGrid.traceLine("2,0 -> 4,0")
+
+        assertThat(ventGrid.grid).hasSize(3)
+        assertThat(ventGrid.grid).containsExactly(GridSpot(Coordinate(2, 0),2),
+                                                    GridSpot(Coordinate(3, 0),2),
+                                                    GridSpot(Coordinate(4, 0),2))
+    }
+
+    @Test
+    fun `create VentGrid - traceLine "1,1 to 1,3" and "0,0 to 3,0" (crossing) - gridSpot at 1,1 has numberOfVents = 2`() {
+        val ventGrid= VentGrid()
+        ventGrid.traceLine("1,1 -> 1,3")
+        ventGrid.traceLine("1,1 -> 3,1")
+
+        assertThat(ventGrid.grid).containsExactly(GridSpot(Coordinate(1, 1), 2),
+                                                    GridSpot(Coordinate(1, 2), 1),
+                                                    GridSpot(Coordinate(1, 3), 1),
+                                                    GridSpot(Coordinate(2, 1), 1),
+                                                    GridSpot(Coordinate(3, 1), 1))
+
+    }
+
+    @Test
+    internal fun `testVents - solve - dangerSpots = 5`() {
+        val ventLineString = FileReader().readLines("/day5/testVents.txt")
+
+        val actual : Int = Day5Vents().solve(ventLineString)
+
+        assertThat(actual).isEqualTo(5)
+    }
+
+    @Test
+    internal fun `testVents - solve - dangerSpots = solution`() {
+        val ventLineString = FileReader().readLines("/day5/vents.txt")
+
+        val actual : Int = Day5Vents().solve(ventLineString)
+
+        assertThat(actual).isEqualTo(6856)
     }
 }
