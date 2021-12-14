@@ -3,30 +3,31 @@ package be.sukes.adventofcode.day5
 import kotlin.math.absoluteValue
 
 class VentGrid{
-    var grid : MutableList<GridSpot> = mutableListOf()
+    val grid : MutableList<GridSpot> = mutableListOf()
 
     fun traceLine(lineString: String)  {
         println("Tracing line: $lineString")
-        addVentLine(lineString.toVentLine())
-    }
-
-    private fun addVentLine(ventLine: VentLine?) {
-        ventLine?.coordinates()?.forEach {coordinate ->
-            val spotAtLocation = grid.filter { spot -> spot.sameLocation(coordinate) }
-            if (spotAtLocation.isEmpty()) {
-                grid.add(GridSpot(coordinate))
-            } else {
-                spotAtLocation.first().addVentLine()
-            }
-        }
+        lineString.toVentLine()
+                  .addVentLine()
     }
 
     fun numberOfDangerSpots() =
-        grid.filter { it.numberOfVents >= 2 }.count()
+        grid.filter { it.numberOfVents >= 2 }
+            .count()
+
+    private fun VentLine?.addVentLine() {
+        this?.coordinates()?.forEach {coordinate ->
+            val spotAtLocation = grid.filter { spot -> spot.sameLocation(coordinate) }
+            if (spotAtLocation.isEmpty())
+                grid.add(GridSpot(coordinate))
+            else
+                spotAtLocation.single().addVentLine()
+        }
+    }
 
     data class GridSpot(val coordinate: Coordinate, var numberOfVents : Int = 1 ) {
-        fun sameLocation(coordinate: Coordinate) = this.coordinate == coordinate
-
+        fun sameLocation(coordinate: Coordinate) =
+                this.coordinate == coordinate
         fun addVentLine() =
                 numberOfVents ++
     }
@@ -51,31 +52,39 @@ data class DiagonalVentLine(override val start: Coordinate, override val end: Co
         val horizontalRange = start.x.straightTo(end.x)
         val verticalRange = start.y.straightTo(end.y)
 
-        return horizontalRange.toList().zip(verticalRange.toList()){ x,y -> Coordinate(x,y) }
+        return horizontalRange.toList().zip(verticalRange.toList(), ::Coordinate)
     }
 }
 
-private fun Int.straightTo(end: Int) = if (this < end) this.rangeTo(end) else this.downTo(end)
+private fun Int.straightTo(end: Int) =
+        if (this < end) this.rangeTo(end) else this.downTo(end)
 
-fun String.toVentLine(): VentLine? =  toCoordinates().mapToVentLine()
+fun String.toVentLine(): VentLine? =
+        definingCoordinates().toVentLine()
 
-private fun String.toCoordinates(): Pair<Coordinate, Coordinate> {
-    return this.split(",", " -> ")
-            .asSequence()
+private fun String.definingCoordinates() =
+            split(",", " -> ")
             .windowed(2, 2)
             .map {  (x, y) ->
                 Coordinate(x.toInt(), y.toInt())
             }.zipWithNext()
-            .first()
-}
+            .single()
 
-private fun Pair<Coordinate,Coordinate>.mapToVentLine(): VentLine? {
-    if (this.first.x == this.second.x) {
-        return VerticalVentLine(this.first, this.second)
-    } else if(this.first.y == this.second.y){
-        return HorizontalVentLine(this.first, this.second)
-    } else if((this.first.x - this.second.x).absoluteValue == (this.first.y - this.second.y).absoluteValue){
-        return DiagonalVentLine(this.first, this.second)
+
+private fun Pair<Coordinate,Coordinate>.toVentLine(): VentLine? =
+    when {
+        isVertical() -> VerticalVentLine(first, second)
+        isHorizontal() -> HorizontalVentLine(first, second)
+        isDiagonal() -> DiagonalVentLine(first, second)
+        else -> null
     }
-    return null
-}
+
+
+private fun Pair<Coordinate, Coordinate>.isVertical() =
+        first.x == second.x
+
+private fun Pair<Coordinate, Coordinate>.isHorizontal() =
+        first.y == second.y
+
+private fun Pair<Coordinate, Coordinate>.isDiagonal() =
+        (first.x - second.x).absoluteValue == (first.y - second.y).absoluteValue

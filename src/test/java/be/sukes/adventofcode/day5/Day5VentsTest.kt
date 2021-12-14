@@ -59,10 +59,10 @@ class Day5VentsTest {
         ventGrid.traceLine("0,2 -> 0,5")
 
         assertThat(ventGrid.grid).hasSize(4)
-        assertThat(ventGrid.grid).containsExactly(GridSpot(Coordinate(0, 2),1),
-                                                    GridSpot(Coordinate(0, 3),1),
-                                                    GridSpot(Coordinate(0, 4),1),
-                                                    GridSpot(Coordinate(0, 5),1))
+        assertThat(ventGrid.grid).containsExactly(GridSpot(Coordinate(0, 2)),
+                                                    GridSpot(Coordinate(0, 3)),
+                                                    GridSpot(Coordinate(0, 4)),
+                                                    GridSpot(Coordinate(0, 5)))
     }
 
     @Test
@@ -84,9 +84,9 @@ class Day5VentsTest {
         ventGrid.traceLine("2,0 -> 4,0")
 
         assertThat(ventGrid.grid).hasSize(3)
-        assertThat(ventGrid.grid).containsExactly(GridSpot(Coordinate(2, 0),1),
-                                                GridSpot(Coordinate(3, 0),1),
-                                                GridSpot(Coordinate(4, 0),1))
+        assertThat(ventGrid.grid).containsExactly(GridSpot(Coordinate(2, 0)),
+                                                GridSpot(Coordinate(3, 0)),
+                                                GridSpot(Coordinate(4, 0)))
     }
 
     @Test
@@ -95,10 +95,10 @@ class Day5VentsTest {
         ventGrid.traceLine("0,5 -> 0,2")
 
         assertThat(ventGrid.grid).hasSize(4)
-        assertThat(ventGrid.grid).containsExactlyInAnyOrder(GridSpot(Coordinate(0, 2),1),
-                                                            GridSpot(Coordinate(0, 3),1),
-                                                            GridSpot(Coordinate(0, 4),1),
-                                                            GridSpot(Coordinate(0, 5),1))
+        assertThat(ventGrid.grid).containsExactlyInAnyOrder(GridSpot(Coordinate(0, 2)),
+                                                            GridSpot(Coordinate(0, 3)),
+                                                            GridSpot(Coordinate(0, 4)),
+                                                            GridSpot(Coordinate(0, 5)))
     }
 
     @Test
@@ -152,8 +152,8 @@ class Day5VentsTest {
 
         assertThat(ventGrid.grid).hasSize(3)
         assertThat(ventGrid.grid).containsExactlyInAnyOrder(GridSpot(Coordinate(1, 1)),
-                GridSpot(Coordinate(2, 2)),
-                GridSpot(Coordinate(3, 3)))
+                                                            GridSpot(Coordinate(2, 2)),
+                                                            GridSpot(Coordinate(3, 3)))
     }
 
     @Test
@@ -163,7 +163,7 @@ class Day5VentsTest {
 
         assertThat(ventGrid.grid).hasSize(3)
         assertThat(ventGrid.grid).containsExactlyInAnyOrder(GridSpot(Coordinate(9, 7)),
-                GridSpot(Coordinate(8, 8)),
-                GridSpot(Coordinate(7, 9)))
+                                                            GridSpot(Coordinate(8, 8)),
+                                                            GridSpot(Coordinate(7, 9)))
     }
 }
