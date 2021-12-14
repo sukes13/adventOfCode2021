@@ -128,12 +128,12 @@ class Day5VentsTest {
     }
 
     @Test
-    internal fun `testVents - solve - dangerSpots = 5`() {
+    internal fun `testVents - solve - dangerSpots = 12`() {
         val ventLineString = FileReader().readLines("/day5/testVents.txt")
 
         val actual : Int = Day5Vents().solve(ventLineString)
 
-        assertThat(actual).isEqualTo(5)
+        assertThat(actual).isEqualTo(12)
     }
 
 //    @Test
@@ -142,6 +142,28 @@ class Day5VentsTest {
 //
 //        val actual : Int = Day5Vents().solve(ventLineString)
 //
-//        assertThat(actual).isEqualTo(6856)
+//        assertThat(actual).isEqualTo(20666)
 //    }
+
+    @Test
+    fun `create VentGrid - traceLine "1,1 to 3,3" - 3 gridSpots (diagonal) added`() {
+        val ventGrid= VentGrid()
+        ventGrid.traceLine("1,1 -> 3,3")
+
+        assertThat(ventGrid.grid).hasSize(3)
+        assertThat(ventGrid.grid).containsExactlyInAnyOrder(GridSpot(Coordinate(1, 1)),
+                GridSpot(Coordinate(2, 2)),
+                GridSpot(Coordinate(3, 3)))
+    }
+
+    @Test
+    fun `create VentGrid - traceLine "9,7 to 7,9" - 3 gridSpots (diagonal) added`() {
+        val ventGrid= VentGrid()
+        ventGrid.traceLine("9,7 -> 7,9")
+
+        assertThat(ventGrid.grid).hasSize(3)
+        assertThat(ventGrid.grid).containsExactlyInAnyOrder(GridSpot(Coordinate(9, 7)),
+                GridSpot(Coordinate(8, 8)),
+                GridSpot(Coordinate(7, 9)))
+    }
 }

@@ -1,6 +1,5 @@
 package be.sukes.adventofcode.day5
 
-import kotlin.math.abs
 import kotlin.math.absoluteValue
 
 class VentGrid{
@@ -12,8 +11,7 @@ class VentGrid{
     }
 
     private fun addVentLine(ventLine: VentLine?) {
-        val coordinates = ventLine?.coordinates()
-        coordinates?.forEach {coordinate ->
+        ventLine?.coordinates()?.forEach {coordinate ->
             val spotAtLocation = grid.filter { spot -> spot.sameLocation(coordinate) }
             if (spotAtLocation.isEmpty()) {
                 grid.add(GridSpot(coordinate))
@@ -61,7 +59,12 @@ data class VerticalVentLine(override val start: Coordinate, override val end: Co
 }
 data class DiagonalVentLine(override val start: Coordinate, override val end: Coordinate) : VentLine(start, end) {
     override fun coordinates(): List<Coordinate> {
-        TODO("Not yet implemented")
+        val horizontalRange = start.x.straightTo(end.x)
+        val verticalRange = start.y.straightTo(end.y)
+
+        return horizontalRange.toList().zip(verticalRange.toList()){ x,y ->
+            Coordinate(x,y)
+        }
     }
 }
 
