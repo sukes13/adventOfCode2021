@@ -47,21 +47,19 @@ abstract class VentLine(open val start: Coordinate, open val end: Coordinate) {
 }
 data class HorizontalVentLine(override val start: Coordinate, override val end: Coordinate) : VentLine(start, end){
     override fun coordinates() : List<Coordinate> {
-        val range = if (ascending(start,end)) start.x.rangeTo(end.x) else start.x.downTo(end.x)
+        val range = start.x.straightTo( end.x)
         return coordinatesOfRange(range){ index: Int -> Coordinate(index,start.y)}
     }
 }
 data class VerticalVentLine(override val start: Coordinate, override val end: Coordinate) : VentLine(start, end){
     override fun coordinates() : List<Coordinate> {
-        val range = if (ascending(start,end)) start.y.rangeTo(end.y) else start.y.downTo(end.y)
+        val range = start.y.straightTo(end.y)
         return coordinatesOfRange(range){ index: Int -> Coordinate(start.x,index)}
     }
+
 }
 
-
-
-
-private fun ascending(start: Coordinate, end: Coordinate) = start.x + start.y < end.x + end.y
+private fun Int.straightTo(end: Int) = if (this < end) this.rangeTo(end) else this.downTo(end)
 
 fun String.toVentLine(): VentLine? =  toCoordinates().mapToVentLine()
 
