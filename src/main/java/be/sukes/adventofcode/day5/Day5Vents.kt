@@ -7,7 +7,9 @@ class Day5Vents {
             ventGrid.traceLine(it)
         }
 
-        return ventGrid.numberOfDangerSpots()
+        val numberOfDangerSpots = ventGrid.numberOfDangerSpots()
+        println("Number Of Danger Spots: $numberOfDangerSpots" )
+        return numberOfDangerSpots
     }
 
 
