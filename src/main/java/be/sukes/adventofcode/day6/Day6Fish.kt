@@ -1,59 +1,51 @@
 package be.sukes.adventofcode.day6
 
 class BetterFishRecord(fishString: String){
-    private val KEYS = (0..8)
-    var fishPerAge : MutableMap<Int,Int> = fishString.toFish().toFishPerAge()
-    var dayCount = 0
+    private val AGES = (0..8)
+    private var fishPerAge : Map<Int,Long> = fishString.toFish()
+                                                       .toFishPerAge()
+    private var dayCount = 0
 
     fun progress(numberOfDays: Int) =
-            repeat((0..numberOfDays).drop(1).size) {
-                progressDay()
+        repeat((0..numberOfDays).drop(1).size) {
+            progressDay()
 
-                dayCount += 1
-                println("-- day $dayCount -- $fishPerAge")
-            }
-
-
-    fun progressDay() {
-        fishPerAge.keys.fold(fishPerAge){ rec, age ->
-            when (age) {
-                0 -> {
-                    rec[8] = rec[8]!! + rec[0]!!
-                    rec[6] = rec[6]!! + rec[0]!!
-                }
-                else -> {
-                    rec[age - 1] = rec[age - 1]!! + rec[age]!!
-                }
-            }
-            rec[age] = 0
-
-            return@fold rec
+            dayCount += 1
+            println("-- day $dayCount -- $fishPerAge")
         }
+
+    fun progressDay(){
+        fishPerAge = AGES.map { age ->
+            when (age) {
+                8 -> age to fishPerAge[0]!!
+                6 -> age to fishPerAge[7]!! + fishPerAge[0]!!
+                else -> age to fishPerAge[age + 1]!!
+            }
+        }.toMap()
     }
 
     private fun Sequence<Int>.toFishPerAge() =
         this.toList().fold(createEmptyRecord()){ rec, age ->
             rec[age] = rec[age]!! + 1
             return@fold rec
-        }
+        }.toMap()
 
-    private fun createEmptyRecord(): MutableMap<Int, Int> {
-        return KEYS.fold(mutableMapOf()){ rec, age ->
-            rec[age] = 0
+    private fun createEmptyRecord(): MutableMap<Int, Long> =
+         AGES.fold(mutableMapOf()){ rec, age ->
+            rec[age] = 0L
             return@fold rec
         }
-    }
 
-    override fun toString(): String {
-        return "$fishPerAge"
-    }
+    override fun toString(): String = "$fishPerAge"
 
+    fun count(): Long =
+        this.fishPerAge.values.sum()
 
 }
 
 class FishRecord(fishString: String) {
-    var allFish : Sequence<Int> = fishString.toFish()
-    var dayCount = 0
+    private var allFish : Sequence<Int> = fishString.toFish()
+    private var dayCount = 0
 
     fun progress(numberOfDays: Int) =
             repeat((0..numberOfDays).drop(1).size) {
