@@ -53,20 +53,35 @@ class Day6FishTest{
         assertThat(fishRecord.count()).isEqualTo(5934)
     }
 
+//    @Test
+//    fun `start fish' - add 26 days - fish count = solution`() {
+//        val fishRecord = BetterFishRecord(FileReader().readLines("/day6/startFish.txt").single())
+//
+//        fishRecord.progress(80)
+//
+//        assertThat(fishRecord.count()).isEqualTo(356190)
+//    }
+
     @Test
-    fun `start fish' - add 26 days - fish count = solution`() {
-        val fishRecord = FishRecord(FileReader().readLines("/day6/startFish.txt").single())
+    fun `test fish - create BetterFishRecord - toString`() {
+        val actual = BetterFishRecord("3,4,3,1,2")
 
-        fishRecord.progress(80)
-
-        assertThat(fishRecord.count()).isEqualTo(356190)
+        assertThat("$actual").isEqualTo("{0=0, 1=1, 2=1, 3=2, 4=1, 5=0, 6=0, 7=0, 8=0}")
     }
 
-//    @Test
-//    fun `test fish - add 256 days - fish count = 5934`() {
-//        val fishRecord = FishRecord("3,4,3,1,2")
-//        fishRecord.progress(256)
-//
-//        assertThat(fishRecord.count()).isEqualTo(26984457539)
-//    }
+    @Test
+    fun `BETTER - test fish - add 1 days - fish = 1,2,1,6,0,8`() {
+        val fishRecord = BetterFishRecord("3,4,3,1,2")
+        fishRecord.progressDay()
+
+        assertThat("$fishRecord").isEqualTo("{0=1, 1=1, 2=2, 3=1, 4=0, 5=0, 6=0, 7=0, 8=0}")
+    }
+
+    @Test
+    fun `BETTER - test fish - add 2 days - fish = 1,2,1,6,0,8`() {
+        val fishRecord = BetterFishRecord("3,4,3,1,2")
+        fishRecord.progress(2)
+
+        assertThat("$fishRecord").isEqualTo("{0=1, 1=2, 2=1, 3=0, 4=0, 5=0, 6=1, 7=0, 8=1}")
+    }
 }
