@@ -41,7 +41,8 @@ class Display(entryString: String) {
         return this
     }
 
-    private fun allSegOf(segLength: Int) = this.inDigits.filter { it.length == segLength }
+    private fun allSegOf(segLength: Int) =
+            this.inDigits.filter { it.length == segLength }
 
     private fun String.toEntries() =
             this.split(" | ")
@@ -61,8 +62,9 @@ class Display(entryString: String) {
 
     fun show(): Int {
         return this.outDigits.map { out ->
-            signals.filterValues { out.alphabetical() == it.alphabetical() }.keys.single()
-        }.joinToString("").toInt()
+                signals.filterValues { out.alphabetical() == it.alphabetical() }.keys.single()
+            }.joinToString("")
+             .toInt()
     }
 }
 
