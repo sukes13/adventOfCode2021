@@ -1,7 +1,6 @@
 package be.sukes.adventofcode.day8
 
 import be.sukes.adventofcode.import.FileReader
-import org.assertj.core.api.SoftAssertions
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.entry
 import org.junit.jupiter.api.Test
@@ -13,10 +12,8 @@ class Day8DisplaysTest {
 
         val actual = Display(input)
 
-        SoftAssertions().apply {
-            assertThat(actual.inDigits).containsExactly("acedgfb","cdfbe","gcdfa","fbcad","dab","cefabd","cdfgeb","eafb","cagedb","ab")
-            assertThat(actual.outDigits).containsExactly("cdfeb","fcadb","cdfeb","cdbaf")
-        }
+        assertThat(actual.inDigits).containsExactly("acedgfb","cdfbe","gcdfa","fbcad","dab","cefabd","cdfgeb","eafb","cagedb","ab")
+        assertThat(actual.outDigits).containsExactly("cdfeb","fcadb","cdfeb","cdbaf")
     }
 
     @Test
@@ -64,7 +61,7 @@ class Day8DisplaysTest {
 
         val actual = display.detectSignals()
 
-        assertThat(actual).contains(entry(0 , "cagedb"),
+        assertThat(actual.signals).contains(entry(0 , "cagedb"),
                                             entry(1 , "ab"),
                                             entry(2 , "gcdfa"),
                                             entry(3 , "fbcad"),
@@ -76,5 +73,32 @@ class Day8DisplaysTest {
                                             entry(9 , "cefabd"))
     }
 
+    @Test
+    fun `test input first - detectSignals - show = 5353`() {
+        val display = Display("acedgfb cdfbe gcdfa fbcad dab cefabd cdfgeb eafb cagedb ab | cdfeb fcadb cdfeb cdbaf")
+
+        val actual = display.detectSignals().show()
+
+        assertThat(actual).isEqualTo(5353)
+    }
+
+    @Test
+    fun `test input - solutionTwo = 61229`() {
+        val entries = FileReader().readLines("/day8/testEntries.txt")
+
+        val actual = entries.solutionTwo()
+
+        assertThat(actual).isEqualTo(61229)
+    }
+
+    @Test
+    fun `test input - solutionTwo = 1043697`() {
+        val entries = FileReader().readLines("/day8/entries.txt")
+
+        val actual = entries.solutionTwo()
+
+        assertThat(actual).isEqualTo(1043697)
+    }
 }
+
 

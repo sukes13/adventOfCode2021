@@ -5,9 +5,10 @@ fun List<String>.solutionOne() =
                 .sum()
 
 fun List<String>.solutionTwo() =
-        0
+        this.map{ Display(it).detectSignals().show() }
+                .sum()
 
-fun List<String>.detectEasySignals(): List<Pair<Int,String>> =
+fun List<String>.detectEasySignals() =
         this.mapNotNull {
             when (it.length) {
                 2 -> 1 to it
@@ -22,31 +23,30 @@ class Display(entryString: String) {
     private val entries = entryString.toEntries()
     val inDigits = entries.first
     val outDigits = entries.second
+    val signals = this.inDigits.detectEasySignals().toMap().toMutableMap()
 
-    fun detectSignals(): Map<Int,String> {
-        val solved = this.inDigits.detectEasySignals().toMap().toMutableMap()
-        var unsolved= this.inDigits.filterNot { solved.containsValue(it) }
+    fun detectSignals(): Display {
+        val segOfFive = allSegOf(5)
+        signals[3] = segOfFive.single { it.stripOfLetters(signals[1]!!).length == 3 }
+        signals[5] = segOfFive.filter { it != signals[3] }
+                .single { it.stripOfLetters(signals[4]!!).length == 2 }
+        signals[2] = segOfFive.single { it != signals[3] && it != signals[5] }
 
-        solved[3] = unsolved.filter { it.length == 5 }.single { it.stripOfLetters(solved[1]!!).length  == 3 }
-        unsolved= unsolved.filterNot { it == solved[3] }
+        val segOfSix = allSegOf(6)
+        signals[6] = segOfSix.single { it.stripOfLetters(signals[1]!!).length == 5 }
+        signals[9] = segOfSix.filter { it != signals[6] }
+                .single { it.stripOfLetters(signals[4]!!).length == 2 }
+        signals[0] = segOfSix.single { it != signals[6] && it != signals[9] }
 
-        solved[5] = unsolved.filter { it.length == 5 }.single { it.stripOfLetters(solved[4]!!).length  == 2 }
-
-        solved[2] = unsolved.single { it != solved[5] && it.length == 5 }
-
-        solved[6] = unsolved.filter { it.length == 6 }.single { it.stripOfLetters(solved[1]!!).length  == 5 }
-        unsolved = unsolved.filterNot { it == solved[6] }
-
-        solved[9] = unsolved.filter { it.length == 6 }.single { it.stripOfLetters(solved[4]!!).length == 2 }
-        solved[0] = unsolved.single { it != solved[9] && it.length == 6 }
-
-        return solved
+        return this
     }
+
+    private fun allSegOf(segLength: Int) = this.inDigits.filter { it.length == segLength }
 
     private fun String.toEntries() =
             this.split(" | ")
                     .windowed(2)
-                    .map { (sig,dis) ->
+                    .map { (sig, dis) ->
                         sig.toStringList() to dis.toStringList()
                     }.single()
 
@@ -54,23 +54,16 @@ class Display(entryString: String) {
             this.split(" ")
                     .map { it }
 
-    private fun String.stripOfLetters(stripString : String) =
-            stripString.fold(this, {it , stripper ->
-                return@fold it.replace(stripper.toString(),"")
+    private fun String.stripOfLetters(stripString: String) =
+            stripString.fold(this, { it, stripper ->
+                return@fold it.replace(stripper.toString(), "")
             })
 
+    fun show(): Int {
+        return this.outDigits.map { out ->
+            signals.filterValues { out.alphabetical() == it.alphabetical() }.keys.single()
+        }.joinToString("").toInt()
+    }
 }
 
-
-//
-//fun List<String>.detectEasySignalsd(): Map<Int,String> =
-//    this.toList().fold(mutableMapOf() , { signals, seg ->
-//        when (seg.length) {
-//            2 -> signals[1] = seg
-//            3 -> signals[7] = seg
-//            4 -> signals[4] = seg
-//            7 -> signals[8] = seg
-//            else -> null
-//        }
-//        return@fold signals
-//    })
+fun String.alphabetical() = this.toCharArray().sorted().joinToString("")
