@@ -1,17 +1,17 @@
 package be.sukes.adventofcode.day9
 
 class HeightMap(input: List<String>) {
-    val floor : Map<Pair<Int,Int>,Int> = input.toFloor()
+    val floor : Map<Coordinate,Int> = input.toFloor()
 
     fun solutionOne() = lowPoints()
             .map{it.value + 1}
             .sum()
 
-    fun neighboursOf(location : Pair<Int,Int>) = floor.filter {
-        it.key == location.first + 1 to location.second ||
-        it.key == location.first - 1 to location.second ||
-        it.key == location.first to location.second + 1 ||
-        it.key == location.first to location.second - 1
+    fun neighboursOf(location : Coordinate) = floor.filter {
+        it.key == Coordinate(location.x + 1 , location.y) ||
+        it.key == Coordinate(location.x - 1 , location.y) ||
+        it.key == Coordinate(location.x , location.y + 1) ||
+        it.key == Coordinate(location.x , location.y - 1)
     }
 
     fun lowPoints() = floor.filter { spot ->
@@ -29,7 +29,9 @@ class HeightMap(input: List<String>) {
     private fun String.mapLine(y: Int) =
             this.trim()
                 .mapIndexed { x, height ->
-                    (x to y) to height.toString().toInt()
+                    Coordinate(x , y) to height.toString().toInt()
                 }.toMap()
 
 }
+
+data class Coordinate(val x:Int,val y:Int)
