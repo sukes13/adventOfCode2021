@@ -2,7 +2,6 @@ package be.sukes.adventofcode.day9
 
 import be.sukes.adventofcode.import.FileReader
 import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.Assertions.entry
 import org.junit.jupiter.api.Test
 
 class Day9HeightMapTest {
@@ -17,7 +16,10 @@ class Day9HeightMapTest {
     fun `test floor - createHeightMap - contains (0 to 0,2), (5 to 0,4), (2 to 2,5), (9 to 4,8)`() {
         val actual = HeightMap(testInput.lines())
 
-        assertThat(actual.floor).contains(entry(Coordinate(0 , 0),2),entry(Coordinate(5 , 0),4),entry(Coordinate(2 , 2),5),entry(Coordinate(9 , 4),8))
+        assertThat(actual.floor).contains(Spot(Coordinate(0 , 0),2),
+                                            Spot(Coordinate(5 , 0),4),
+                                            Spot(Coordinate(2 , 2),5),
+                                            Spot(Coordinate(9 , 4),8))
     }
 
     @Test
@@ -26,10 +28,10 @@ class Day9HeightMapTest {
 
         val actual = heightMap.neighboursOf(Coordinate(2 , 2))
 
-        assertThat(actual).contains(entry(Coordinate(2 , 1),8)
-                ,entry(Coordinate(1 , 2),8)
-                ,entry(Coordinate(2 , 3),6)
-                ,entry(Coordinate(3 , 2),6))
+        assertThat(actual).contains(Spot(Coordinate(2 , 1),8),
+                                    Spot(Coordinate(1 , 2),8),
+                                    Spot(Coordinate(2 , 3),6),
+                                    Spot(Coordinate(3 , 2),6))
     }
 
     @Test
@@ -38,8 +40,8 @@ class Day9HeightMapTest {
 
         val actual = heightMap.neighboursOf(Coordinate(0 , 0))
 
-        assertThat(actual).contains(entry(Coordinate(0 , 1),3),
-                entry(Coordinate(1 , 0),1))
+        assertThat(actual).contains(Spot(Coordinate(0 , 1),3),
+                                    Spot(Coordinate(1 , 0),1))
     }
 
     @Test
@@ -48,7 +50,9 @@ class Day9HeightMapTest {
 
         val actual = heightMap.neighboursOf(Coordinate(2 , 0))
 
-        assertThat(actual).contains(entry(Coordinate(1 , 0),1),entry(Coordinate(3 , 0),9),entry(Coordinate(2 , 1),8))
+        assertThat(actual).contains(Spot(Coordinate(1 , 0),1),
+                                    Spot(Coordinate(3 , 0),9),
+                                    Spot(Coordinate(2 , 1),8))
     }
 
     @Test
@@ -57,10 +61,10 @@ class Day9HeightMapTest {
 
         val actual = heightMap.lowPoints()
 
-        assertThat(actual).contains(entry(Coordinate(1 , 0),1)
-                ,entry(Coordinate(9 , 0),0)
-                ,entry(Coordinate(2 , 2),5)
-                ,entry(Coordinate(6 , 4),5))
+        assertThat(actual).contains(Spot(Coordinate(1 , 0),1)
+                ,Spot(Coordinate(9 , 0),0)
+                ,Spot(Coordinate(2 , 2),5)
+                ,Spot(Coordinate(6 , 4),5))
 
     }
 
@@ -82,4 +86,49 @@ class Day9HeightMapTest {
         assertThat(actual).isEqualTo(423)
     }
 
+    @Test
+    fun `test floor - basinOf(1,0) - contains (1 to 0,1), (0 to 0,2), (0 to 1,1)`() {
+        val heightMap = HeightMap(testInput.lines())
+
+        val actual = heightMap.basinOf(Spot(Coordinate(1 , 0),1))
+
+        assertThat(actual).containsOnly(Spot(Coordinate(0 , 0),2),
+                                            Spot(Coordinate(1 , 0),1),
+                                            Spot(Coordinate(0 , 1),3))
+    }
+
+    @Test
+    fun `test floor - basinOf(9,0) - contains (1 to 0,1), (0 to 0,2), (0 to 1,1)`() {
+        val heightMap = HeightMap(testInput.lines())
+
+        val actual = heightMap.basinOf(Spot(Coordinate(9 , 0),0))
+
+        assertThat(actual).containsOnly(Spot(coordinate=Coordinate(x=9, y=0), height=0),
+                                        Spot(coordinate=Coordinate(x=8, y=0), height=1),
+                                        Spot(coordinate=Coordinate(x=9, y=1), height=1),
+                                        Spot(coordinate=Coordinate(x=7, y=0), height=2),
+                                        Spot(coordinate=Coordinate(x=8, y=1), height=2),
+                                        Spot(coordinate=Coordinate(x=9, y=2), height=2),
+                                        Spot(coordinate=Coordinate(x=6, y=0), height=3),
+                                        Spot(coordinate=Coordinate(x=5, y=0), height=4),
+                                        Spot(coordinate=Coordinate(x=6, y=1), height=4))
+    }
+
+    @Test
+    fun `test floor - basins - solution part 2 = 1134`() {
+        val heightMap = HeightMap(testInput.lines())
+
+        val actual = heightMap.solutionTwo()
+
+        assertThat(actual).isEqualTo(1134)
+    }
+
+    @Test
+    fun `floor - basins - solution part 2 = 1198704`() {
+        val heightMap = HeightMap(FileReader().readLines("/day9/floor.txt"))
+
+        val actual = heightMap.solutionTwo()
+
+        assertThat(actual).isEqualTo(1198704)
+    }
 }
