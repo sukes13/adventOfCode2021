@@ -7,28 +7,28 @@ import org.junit.jupiter.api.Test
 class Day10ChunksTest{
     @Test
     fun `isCorruptLine - isCorruptLine - corrupt = empty`() {
-        val actual = NavSystem().getCorruptCharacter("[({(<(())[]>[[{[]{<()<>>")
+        val actual = NavSystem().corruptingCharOf("[({(<(())[]>[[{[]{<()<>>")
 
         assertThat(actual).isEqualTo("")
     }
 
     @Test
     fun `isCorruptLine - isCorruptLine - corrupt = brace`() {
-        val actual = NavSystem().getCorruptCharacter("{([(<{}[<>[]}>{[]{[(<()>")
+        val actual = NavSystem().corruptingCharOf("{([(<{}[<>[]}>{[]{[(<()>")
 
         assertThat(actual).isEqualTo("}")
     }
 
     @Test
     fun `isCorruptLine - isCorruptLine - corrupt = parenthesis`() {
-        val actual = NavSystem().getCorruptCharacter("[[<[([]))<([[{}[[()]]]")
+        val actual = NavSystem().corruptingCharOf("[[<[([]))<([[{}[[()]]]")
 
         assertThat(actual).isEqualTo(")")
     }
 
     @Test
     fun `isCorruptLine - isCorruptLine - corrupt = diamond`() {
-        val actual = NavSystem().getCorruptCharacter("<{([([[(<>()){}]>(<<{{")
+        val actual = NavSystem().corruptingCharOf("<{([([[(<>()){}]>(<<{{")
 
         assertThat(actual).isEqualTo(">")
     }
@@ -36,7 +36,7 @@ class Day10ChunksTest{
 
     @Test
     fun `isCorruptLine - isCorruptLine - corrupt = bracket`() {
-        val actual = NavSystem().getCorruptCharacter("[{[{({}]{}}([{[{{{}}([]")
+        val actual = NavSystem().corruptingCharOf("[{[{({}]{}}([{[{{{}}([]")
 
         assertThat(actual).isEqualTo("]")
     }
@@ -55,12 +55,20 @@ class Day10ChunksTest{
         assertThat(actual).isEqualTo(413733)
     }
 
-//    @Test
-//    fun `getCompletion - isCorruptLine - corrupt = bracket`() {
-//        val actual = NavSystem().getCompletion("[({(<(())[]>[[{[]{<()<>>")
-//
-//        assertThat(actual).isEqualTo("}}]])})]")
-//    }
+    @Test
+    fun `getCompletion - correct completion`() {
+        val actual = NavSystem().getCompletion("[({(<(())[]>[[{[]{<()<>>")
+
+        assertThat(actual).isEqualTo("}}]])})]")
+    }
+
+    @Test
+    fun `getCompletion - corrupt line - completion ""`() {
+        val actual = NavSystem().getCompletion("{([(<{}[<>[]}>{[]{[(<()>")
+
+        assertThat(actual).isEqualTo("")
+    }
+
 
 }
 
