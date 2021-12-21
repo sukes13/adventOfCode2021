@@ -2,20 +2,14 @@ package be.sukes.adventofcode.day10
 
 class NavSystem {
 
-    fun isCorruptLine(input: String) : String {
-        val invalids = filterValids(input)
+    fun solutionOne(input: List<String>) =
+            input.map { getCorruptCharacter(it).toErrorScore() }
+                 .sum()
 
-        return when {
-            ")" in invalids -> ")"
-            "]" in invalids -> "}"
-            "}" in invalids -> "}"
-            ">" in invalids -> ">"
-            else -> ""
-        }
-    }
+    fun getCorruptCharacter(input: String) =
+            removeValidChunks(input).firstOrNull{ it.toString() in listOf(")", "}", "]", ">") }?.toString() ?: ""
 
-
-    private tailrec fun filterValids(line : String) : String{
+    private tailrec fun removeValidChunks(line : String) : String{
         val filtered = line.replace("()","")
                                  .replace("{}","")
                                  .replace("[]","")
@@ -23,6 +17,21 @@ class NavSystem {
         if (filtered.length == line.length){
             return line
         }
-        return filterValids(filtered)
+        return removeValidChunks(filtered)
     }
+
+    private fun String.toErrorScore() : Int {
+        return when{
+            equals(")") -> 3
+            equals("]") -> 57
+            equals("}") -> 1197
+            equals(">") -> 25137
+            else -> 0
+        }
+    }
+//
+//    fun getCompletion(s: String): String {
+//        return ""
+//    }
+
 }
