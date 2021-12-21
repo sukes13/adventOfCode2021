@@ -1,8 +1,9 @@
 package be.sukes.adventofcode.day10
 
-import be.sukes.adventofcode.day10.NavSystem.CharType.*
-import be.sukes.adventofcode.day10.NavSystem.CharType.Companion.isCloserOf
-import be.sukes.adventofcode.day10.NavSystem.CharType.Companion.isOpenerOf
+import be.sukes.adventofcode.day10.CharType.*
+import be.sukes.adventofcode.day10.CharType.Companion.allClosingChars
+import be.sukes.adventofcode.day10.CharType.Companion.isCloserOf
+import be.sukes.adventofcode.day10.CharType.Companion.isOpenerOf
 
 
 class NavSystem {
@@ -19,7 +20,7 @@ class NavSystem {
 
     fun corruptingCharOf(line: String) =
             line.removeValidChunks()
-                    .firstOrNull{ it.toString() in closingChars() }
+                    .firstOrNull{ it.toString() in allClosingChars() }
                     ?.toString() ?: ""
 
     fun completionOf(line: String): String {
@@ -49,20 +50,20 @@ class NavSystem {
     }
 
     private fun List<Long>.getMiddle() = this.sorted()[(this.size - 1) / 2]
-    private fun closingChars() = values().map { it.closer }
 
-    enum class CharType(val opener: String, val closer : String, val corruptScore:Int, val completeScore: Int) {
-        PARENTHESIS("(",")",3,1),
-        BRACKETS("[","]",57,2),
-        BRACES("{","}",1197,3),
-        DIAMONDS("<",">",25137,4),
-        EMPTY("","",0,0);
+}
 
-        val chunk : String = opener + closer
-        companion object {
-            fun String.isOpenerOf() = values().find { value -> value.opener == this } ?: EMPTY
-            fun String.isCloserOf() = values().find { value -> value.closer == this } ?: EMPTY
-        }
+enum class CharType(val opener: String, val closer : String, val corruptScore:Int, val completeScore: Int) {
+    PARENTHESIS("(",")",3,1),
+    BRACKETS("[","]",57,2),
+    BRACES("{","}",1197,3),
+    DIAMONDS("<",">",25137,4),
+    EMPTY("","",0,0);
+
+    val chunk : String = opener + closer
+    companion object {
+        fun String.isOpenerOf() = values().find { value -> value.opener == this } ?: EMPTY
+        fun String.isCloserOf() = values().find { value -> value.closer == this } ?: EMPTY
+        fun allClosingChars() = values().map { it.closer }
     }
-
 }
