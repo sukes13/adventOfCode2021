@@ -1,30 +1,41 @@
 package be.sukes.adventofcode.day10
 
 import be.sukes.adventofcode.day10.NavSystem.CharType.*
-import be.sukes.adventofcode.day10.NavSystem.CharType.Companion.closesWith
-import be.sukes.adventofcode.day10.NavSystem.CharType.Companion.opensWith
+import be.sukes.adventofcode.day10.NavSystem.CharType.Companion.isCloserOf
+import be.sukes.adventofcode.day10.NavSystem.CharType.Companion.isOpenerOf
 
 
 class NavSystem {
 
     fun solutionOne(input: List<String>) =
-            input.map { corruptingCharOf(it).toErrorScore() }
+            input.map { corruptingCharOf(it).isCloserOf().corruptScore }
                  .sum()
+
+    fun solutionTwo(input: List<String>) =
+            input.map { completionOf(it) }
+                 .map { completionScoreOf(it) }
+                 .filterNot { it==0L }
+                 .getMiddle()
 
     fun corruptingCharOf(line: String) =
             line.removeValidChunks()
-                .firstOrNull{ it.toString() in closingChars() }
-                ?.toString() ?: ""
+                    .firstOrNull{ it.toString() in closingChars() }
+                    ?.toString() ?: ""
 
-    fun getCompletion(line: String): String {
+    fun completionOf(line: String): String {
         val inValidChars = line.removeValidChunks()
         return when {
             corruptingCharOf(inValidChars).isNotBlank() -> ""
-            else -> inValidChars.map { it.toString().closedBy() }
+            else -> inValidChars.map { it.toString().isOpenerOf().closer }
                                 .reversed()
                                 .joinToString("")
         }
     }
+
+    fun completionScoreOf(line: String) =
+            line.toList().fold(0L){ score, char ->
+                            (score * 5L) + char.toString().isCloserOf().completeScore
+                         }
 
     private tailrec fun String.removeValidChunks() : String{
         val filtered = this.replace(PARENTHESIS.chunk,"")
@@ -37,27 +48,20 @@ class NavSystem {
         return filtered.removeValidChunks()
     }
 
-    private fun String.toErrorScore() = closesWith(this).corruptScore
+    private fun List<Long>.getMiddle() = this.sorted()[(this.size - 1) / 2]
+    private fun closingChars() = values().map { it.closer }
 
-    private fun String.closedBy() = opensWith(this).close
-
-    private fun closingChars() = values().map { it.close }
-
-    enum class CharType(val open: String, val close : String, val corruptScore:Int, val completeScore: Int) {
+    enum class CharType(val opener: String, val closer : String, val corruptScore:Int, val completeScore: Int) {
         PARENTHESIS("(",")",3,1),
         BRACKETS("[","]",57,2),
         BRACES("{","}",1197,3),
         DIAMONDS("<",">",25137,4),
-        DEFAULT("","",0,0);
+        EMPTY("","",0,0);
 
-        val chunk : String = open + close
+        val chunk : String = opener + closer
         companion object {
-            fun opensWith(char : String) : CharType{
-                return  values().find { value -> value.open == char } ?: DEFAULT
-            }
-            fun closesWith(char : String) : CharType{
-                return  values().find { value -> value.close == char } ?: DEFAULT
-            }
+            fun String.isOpenerOf() = values().find { value -> value.opener == this } ?: EMPTY
+            fun String.isCloserOf() = values().find { value -> value.closer == this } ?: EMPTY
         }
     }
 
