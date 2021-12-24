@@ -35,7 +35,7 @@ class Day11OctopiTest {
     fun `small octopi - doStep - new pattern `() {
         val octopiRecord = OctopiRecord(smallOctopi)
 
-        octopiRecord.doSteps(1)
+        octopiRecord.solutionOne(1)
 
         assertThat(octopiRecord.current()).isEqualTo(smallOctopi2)
     }
@@ -44,7 +44,7 @@ class Day11OctopiTest {
     fun `test octopi - doStep - new pattern `() {
         val octopiRecord = OctopiRecord(FileReader().readLines("/day11/testOctopi.txt"))
 
-        octopiRecord.doSteps(1)
+        octopiRecord.solutionOne(1)
 
         assertThat(octopiRecord.current()).isEqualTo(FileReader().readLines("/day11/testOctopiStepOne.txt"))
     }
@@ -53,7 +53,7 @@ class Day11OctopiTest {
     fun `test octopi - doStep twice - new pattern `() {
         val octopiRecord = OctopiRecord(FileReader().readLines("/day11/testOctopi.txt"))
 
-        octopiRecord.doSteps(2)
+        octopiRecord.solutionOne(2)
 
         assertThat(octopiRecord.current()).isEqualTo(FileReader().readLines("/day11/testOctopiStepTwo.txt"))
     }
@@ -62,7 +62,7 @@ class Day11OctopiTest {
     fun `test octopi - doStep 3 times - new pattern `() {
         val octopiRecord = OctopiRecord(FileReader().readLines("/day11/testOctopi.txt"))
 
-        octopiRecord.doSteps(3)
+        octopiRecord.solutionOne(3)
 
         assertThat(octopiRecord.current()).isEqualTo(FileReader().readLines("/day11/testOctopiStepThree.txt"))
     }
@@ -71,7 +71,7 @@ class Day11OctopiTest {
     fun `test octopi - doStep 100 times - new pattern `() {
         val octopiRecord = OctopiRecord(FileReader().readLines("/day11/testOctopi.txt"))
 
-        octopiRecord.doSteps(100)
+        octopiRecord.solutionOne(100)
 
         assertThat(octopiRecord.current()).isEqualTo(FileReader().readLines("/day11/testOctopiStepHunderd.txt"))
     }
@@ -80,7 +80,7 @@ class Day11OctopiTest {
     fun `test octopi - solutionOne - 1656`() {
         val octopiRecord = OctopiRecord(FileReader().readLines("/day11/testOctopi.txt"))
 
-        val actual = octopiRecord.solutionOne()
+        val actual = octopiRecord.solutionOne(100)
 
         assertThat(actual).isEqualTo(1656)
     }
@@ -89,9 +89,27 @@ class Day11OctopiTest {
     fun `octopi - solutionOne - 1683`() {
         val octopiRecord = OctopiRecord(FileReader().readLines("/day11/octopi.txt"))
 
-        val actual = octopiRecord.solutionOne()
+        val actual = octopiRecord.solutionOne(100)
 
         assertThat(actual).isEqualTo(1683)
+    }
+
+    @Test
+    fun `test octopi - solutionTwo - 195`() {
+        val octopiRecord = OctopiRecord(FileReader().readLines("/day11/testOctopi.txt"))
+
+        val actual = octopiRecord.solutionTwo()
+
+        assertThat(actual).isEqualTo(195)
+    }
+
+    @Test
+    fun `octopi - solutionTwo - 1683`() {
+        val octopiRecord = OctopiRecord(FileReader().readLines("/day11/octopi.txt"))
+
+        val actual = octopiRecord.solutionTwo()
+
+        assertThat(actual).isEqualTo(788)
     }
 }
 
