@@ -113,7 +113,7 @@ class Day11OctopiTest {
     }
 }
 
-private fun String.prepare() =
+fun String.prepare() =
         this.replace(" ", "")
                 .replace("\n", System.lineSeparator())
                 .lines()
