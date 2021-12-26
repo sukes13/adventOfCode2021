@@ -30,9 +30,10 @@ class Day12CavesTest {
     @Test
     fun `small caves - paths - is correct`() {
         val cavesRecord = CavesRecord(cavesOne)
-        cavesRecord.search()
 
-        assertThat(cavesRecord.paths).containsExactlyInAnyOrder("start,A,b,A,c,A,end",
+        val actual = cavesRecord.search()
+
+        assertThat(actual.paths).containsExactlyInAnyOrder("start,A,b,A,c,A,end",
                                                     "start,A,b,A,end",
                                                     "start,A,b,end",
                                                     "start,A,c,A,b,A,end",
@@ -47,17 +48,17 @@ class Day12CavesTest {
     @Test
     fun `test caves - paths - is correct`() {
         val cavesRecord = CavesRecord(FileReader().readLines("/day12/testCaves.txt"))
-        cavesRecord.search()
 
-        assertThat(cavesRecord.paths).containsExactlyInAnyOrder(*FileReader().readLines("/day12/testPaths.txt").toTypedArray())
+        val actual = cavesRecord.search()
+
+        assertThat(actual.paths).containsExactlyInAnyOrder(*FileReader().readLines("/day12/testPaths.txt").toTypedArray())
     }
 
     @Test
     fun `cavesOne - solutionOne - is test 10`() {
         val cavesRecord = CavesRecord(cavesOne)
-        cavesRecord.search()
 
-        val actual = cavesRecord.solutionOne()
+        val actual = cavesRecord.search().solution()
 
         assertThat(actual).isEqualTo(10)
     }
@@ -65,9 +66,8 @@ class Day12CavesTest {
     @Test
     fun `test caves - solutionOne - is test 19`() {
         val cavesRecord = CavesRecord(FileReader().readLines("/day12/testCaves.txt"))
-        cavesRecord.search()
 
-        val actual = cavesRecord.solutionOne()
+        val actual = cavesRecord.search().solution()
 
         assertThat(actual).isEqualTo(19)
     }
@@ -75,9 +75,8 @@ class Day12CavesTest {
     @Test
     fun `test caves 2 - solutionOne - is test 226`() {
         val cavesRecord = CavesRecord(FileReader().readLines("/day12/testCaves2.txt"))
-        cavesRecord.search()
 
-        val actual = cavesRecord.solutionOne()
+        val actual = cavesRecord.search().solution()
 
         assertThat(actual).isEqualTo(226)
     }
@@ -85,21 +84,56 @@ class Day12CavesTest {
     @Test
     fun `caves - solutionOne - is test 4338`() {
         val cavesRecord = CavesRecord(FileReader().readLines("/day12/caves.txt"))
-        cavesRecord.search()
 
-        val actual = cavesRecord.solutionOne()
+        val actual = cavesRecord.search().solution()
 
         assertThat(actual).isEqualTo(4338)
     }
-//
-//    @Test
-//    fun `cavesOne - version 2 - is correct`() {
-//        val cavesRecord = CavesRecord(cavesOne)
-//
-//        val actual = cavesRecord.paths()
-//
-//        assertThat(actual.paths).containsExactlyInAnyOrder(*FileReader().readLines("/day12/cavesOneSolTwo.txt").toTypedArray())
-//    }
+
+    @Test
+    fun `cavesOne - version 2 - is correct`() {
+        val cavesRecord = CavesRecord(cavesOne)
+
+        val actual = cavesRecord.searchV2()
+
+        assertThat(actual.paths).containsExactlyInAnyOrder(*FileReader().readLines("/day12/cavesOneSolTwo.txt").toTypedArray())
+    }
+
+    @Test
+    fun `cavesOne - version 2 - solution - 36`() {
+        val cavesRecord = CavesRecord(cavesOne)
+
+        val actual = cavesRecord.searchV2().solution()
+
+        assertThat(actual).isEqualTo(36)
+    }
+
+    @Test
+    fun `test caves - version 2 - solution - 103`() {
+        val cavesRecord = CavesRecord(FileReader().readLines("/day12/testCaves.txt"))
+
+        val actual = cavesRecord.searchV2().solution()
+
+        assertThat(actual).isEqualTo(103)
+    }
+
+    @Test
+    fun `test caves 2 - version 2 - solution - 3509`() {
+        val cavesRecord = CavesRecord(FileReader().readLines("/day12/testCaves2.txt"))
+
+        val actual = cavesRecord.searchV2().solution()
+
+        assertThat(actual).isEqualTo(3509)
+    }
+
+    @Test
+    fun `caves 2 - version 2 - solution - 114189`() {
+        val cavesRecord = CavesRecord(FileReader().readLines("/day12/caves.txt"))
+
+        val actual = cavesRecord.searchV2().solution()
+
+        assertThat(actual).isEqualTo(114189)
+    }
 }
 
 
