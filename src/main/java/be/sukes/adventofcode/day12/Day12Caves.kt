@@ -21,7 +21,7 @@ class CavesRecord(cavesStrings: List<String>) {
     }
 
     private fun searchPaths(cave: Cave, extraCheck: (Trail) -> Boolean, trail: Trail = Trail()) {
-        val updatedTrail = cave.name.addToPath(trail)
+        val updatedTrail = trail + cave.name
         val validSteps = validSteps(cave, updatedTrail, extraCheck)
         when {
             validSteps.isEmpty() -> paths.add(updatedTrail.toString())
@@ -30,8 +30,6 @@ class CavesRecord(cavesStrings: List<String>) {
             }
         }
     }
-
-    private fun String.addToPath(trail: Trail) = trail.copy(path = trail.path + this)
 
     private fun validSteps(cave: Cave, trail: Trail, extraCheck: (Trail) -> Boolean) =
             when (cave.name) {
@@ -69,13 +67,14 @@ class CavesRecord(cavesStrings: List<String>) {
 
 data class Trail(var path: List<String> = mutableListOf()) {
     fun hasDubbler(): Boolean = path.filterNot { it == "start" || it == "end" }
-            .filter { it.first().isLowerCase() }
-            .groupingBy { it }
-            .eachCount()
-            .filter { it.value > 1 }
-            .isNotEmpty()
+                                    .filter { it.first().isLowerCase() }
+                                    .groupingBy { it }
+                                    .eachCount()
+                                    .filter { it.value > 1 }
+                                    .isNotEmpty()
 
     override fun toString() = path.joinToString(",")
+    operator fun plus(caveName: String) = copy(path = path + caveName)
 }
 
 data class Cave(val name: String) {
