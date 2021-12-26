@@ -12,26 +12,12 @@ class Day21DiceTest {
         assertThat(actual.players).containsExactly(Player(4,0),Player(8,0))
     }
 
-//    @Test
-//    fun `roll Dice - players at start position`() {
-//        val actual = Dice(1)
-//         actual.roll()
-//         actual.roll()
-//         actual.roll()
-//         actual.roll()
-//         actual.roll()
-//         val n = actual.roll()
-//
-//        assertThat(n).isEqualTo(51)
-//        assertThat(actual.current).isEqualTo(18)
-//    }
-
     @Test
     fun `play - player 1 win with 1000 on position 10 on roll 993`() {
         val diceGame = DiceGame(listOf(4, 8))
-        val actual = diceGame.play(0)
+        val actual = diceGame.play(GameTurn(diceGame.players))
 
-        assertThat(actual.dice.current).isEqualTo(994)
+        assertThat(diceGame.dice.current).isEqualTo(994)
         assertThat(actual.players).containsExactly(Player(10,1000),Player(3,745))
     }
 
