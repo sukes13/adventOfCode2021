@@ -70,24 +70,24 @@ data class VerticalFold(override val line: Int) : Folding(line) {
 //fold along y=7
 private fun List<String>.toFoldings() =
         this.filter { it.contains("fold") }
-                .map {
-                    it.replace("fold along ", "")
-                            .split("=")
-                            .windowed(2).map { (direction, line) ->
-                                when (direction) {
-                                    "x" -> VerticalFold(line.toInt())
-                                    else -> HorizontalFold(line.toInt())
-                                }
-                            }.single()
+                .map { line ->
+                    line.replace("fold along ", "")
+                        .split("=")
+                        .windowed(2).map { (direction, line) ->
+                            when (direction) {
+                                "x" -> VerticalFold(line.toInt())
+                                else -> HorizontalFold(line.toInt())
+                            }
+                        }.single()
                 }
 
 private fun List<String>.toRoster(): Roster {
     val spots = this.filterNot { it.contains("fold") || it.isBlank() }
-                                    .map {
-                                        it.split(",")
-                                                .windowed(2).map { (x, y) ->
-                                                    Spot(x.toInt(), y.toInt())
-                                                }.single()
+                                    .map { line ->
+                                        line.split(",")
+                                            .windowed(2).map { (x, y) ->
+                                                Spot(x.toInt(), y.toInt())
+                                            }.single()
                                     }.toMutableSet()
     val width = spots.map { it.x }.max()!!
     val height = spots.map { it.y }.max()!!
