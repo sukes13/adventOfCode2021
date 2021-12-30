@@ -23,9 +23,9 @@ class PolymerTemplate(input: List<String>) {
     private fun Polymer.insert(): Polymer {
         val newPolymer = copy(pairs = mutableMapOf())
         this.pairs.forEach { (pair, count) ->
-            val letter = inserts.getValue(pair)
-            newPolymer.addNewPairs(pair, letter, count)
-            newPolymer.addToLetterCount(letter, count)
+            val insertLetter = inserts.getValue(pair)
+            newPolymer.addNewPairs(pair, insertLetter, count)
+            newPolymer.addToLetterCount(insertLetter, count)
         }
         return newPolymer
     }
@@ -33,8 +33,8 @@ class PolymerTemplate(input: List<String>) {
 
 data class Polymer(val pairs: MutableMap<Pair<Char, Char>, Long>, val letterCount: MutableMap<Char, Long>) {
 
-    fun addNewPairs(pair: Pair<Char, Char>, letter: Char, count: Long) {
-        listOf(pair.first to letter, letter to pair.second).forEach {
+    fun addNewPairs(pair: Pair<Char, Char>, insertLetter: Char, count: Long) {
+        listOf(pair.first to insertLetter, insertLetter to pair.second).forEach {
             pairs[it] = if(it in pairs.keys) pairs[it]!! + count else count
         }
     }
