@@ -1,40 +1,70 @@
 package be.sukes.adventofcode.day14
 
+import java.util.*
+
+
 class PolymerTemplate(input: List<String>) {
     val startPolymer = input.polymer()
-    val inserts: List<Insert> = input.inserts()
+    val inserts = input.inserts()
 
-    fun solutionOne(times: Int): Int {
-        val count = insert(times).letterCount()
-        return count.values.max()!! - count.values.min()!!
+    fun solutionOne(times: Int): Long {
+        val endCount = insert(times).letterCount
+        return endCount.values.max()!! - endCount.values.min()!!
     }
 
-    fun insert(times: Int) =
-            (1..times).fold(startPolymer) { polymer, _ ->
-                polymer.insert()
-            }
+    fun insert(times: Int): Polymer {
+        val start = Date()
+        return (1..times).fold(startPolymer) { polymer, t ->
+            println("Turn $t took  ${Date().time - start.time}")
+            polymer.insert()
+        }
+    }
 
-    private fun List<String>.insert() =
-            this.windowed(2, 1)
-                    .map { (x, y) -> inserted(x, y) }
-                    .mapIndexed { index, list ->
-                        if (index > 0) list.removeAt(0)
-                        list
-                    }.flatten()
-
-    private fun inserted(x: String, y: String) =
-            listOf(x, inserts.single { it.pair == x to y }.letter, y).toMutableList()
-
-    private fun List<String>.letterCount() = this.groupingBy { it }.eachCount()
+    private fun Polymer.insert(): Polymer {
+        val newPolymer = copy(pairs = mutableMapOf())
+        this.pairs.forEach { (pair, count) ->
+            val letter = inserts.getValue(pair)
+            newPolymer.addNewPairs(pair, letter, count)
+            newPolymer.addToLetterCount(letter, count)
+        }
+        return newPolymer
+    }
 }
 
-data class Insert(val pair: Pair<String, String>, val letter: String)
+data class Polymer(val pairs: MutableMap<Pair<Char, Char>, Long>, val letterCount: MutableMap<Char, Long>) {
 
-private fun List<String>.polymer() = this.first().trim().toList().map { "$it" }
+    fun addNewPairs(pair: Pair<Char, Char>, letter: Char, count: Long) {
+        listOf(pair.first to letter, letter to pair.second).forEach {
+            pairs[it] = if(it in pairs.keys) pairs[it]!! + count else count
+        }
+    }
+
+    fun addToLetterCount(letter: Char, count: Long) {
+        letterCount[letter] = if (letter in letterCount) letterCount[letter]!! + count else count
+    }
+}
+
+private fun List<String>.polymer() = Polymer(toPairs(), toLetterCount())
+
+private fun List<String>.toLetterCount() =
+        this.first()
+                .groupingBy { it }
+                .eachCount()
+                .mapValues { it.value.toLong() }
+                .toMutableMap()
+
+private fun List<String>.toPairs() =
+        this.first()
+                .windowed(2, 1)
+                .groupingBy { it }
+                .eachCount()
+                .map { (x, y) ->
+                    (x.first() to x.last()) to y.toLong()
+                }.toMap().toMutableMap()
 
 private fun List<String>.inserts() =
         this.filter { it.contains(" -> ") }
                 .map { it.split(" -> ") }
                 .map { (pair, insert) ->
-                    Insert(pair.first().toString() to pair.last().toString(), insert.single().toString())
-                }
+                    (pair.first() to pair.last()) to insert.single()
+                }.toMap()
