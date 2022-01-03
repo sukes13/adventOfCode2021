@@ -1,21 +1,19 @@
 package be.sukes.adventofcode.day15
 
-import kotlin.random.Random
-
 
 class ChitonNav(input: List<String>) {
     val caveSpots = input.toCaveSpots()
 
     fun shortestTo(start: Spot, end: Spot): Int {
         val queue = caveSpots.toStartQueue(start)
-        val checked = mutableListOf<Int>()
+        val checked = mutableListOf<CaveSpot>()
 
-        while(checked.size < caveSpots.keys.size){
+        while(checked.size < caveSpots.size){
             val current = queue.minBy {  it.value}!!.key
-            checked.add(current.id)
+            checked.add(current)
 
-            current.neighbours().forEach { (id, caveSpot) ->
-                if(id !in checked){
+            current.neighbours().forEach { caveSpot ->
+                if(caveSpot !in checked){
                     val sum = queue.getValue(current) + caveSpot.risk
                     if(caveSpot.spot == end){
                         return sum
@@ -29,8 +27,8 @@ class ChitonNav(input: List<String>) {
         throw DestinationNotFoundException()
     }
 
-    private fun MutableMap<Int,CaveSpot>.toStartQueue(start: Spot) =
-            this.map { (_, caveSpot) ->
+    private fun List<CaveSpot>.toStartQueue(start: Spot) =
+            this.map { caveSpot ->
                 when (caveSpot.spot) {
                     start -> caveSpot to 0
                     else -> caveSpot to Int.MAX_VALUE
@@ -38,7 +36,7 @@ class ChitonNav(input: List<String>) {
             }.toMap().toMutableMap()
 
     private fun CaveSpot.neighbours() =
-            caveSpots.filter { (_, caveSpot) ->
+            caveSpots.filter { caveSpot ->
                 caveSpot.spot in this.spot.neighbours()
             }
 }
@@ -46,15 +44,14 @@ class ChitonNav(input: List<String>) {
 private fun List<String>.toCaveSpots() =
         this.mapIndexed { row, line ->
             line.trim().mapIndexed { col, risk ->
-                val caveSpot = CaveSpot(spot = Spot(col, row), risk = risk.toString().toInt())
-                caveSpot.id to caveSpot
+                CaveSpot(spot = Spot(col, row), risk = risk.toString().toInt())
             }
-        }.flatten().map { it.first to it.second }.toMap().toMutableMap()
+        }.flatten()
 
-data class CaveSpot(val id: Int = Random.nextInt(), val spot: Spot, val risk: Int)
+
+data class CaveSpot(val spot: Spot, val risk: Int)
 
 data class Spot(val x: Int, val y: Int) {
-
     fun neighbours() =  listOf(Spot(x-1,y),Spot(x+1,y),Spot(x,y+1),Spot(x,y-1))
 }
 
