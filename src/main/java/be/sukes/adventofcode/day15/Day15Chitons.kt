@@ -8,17 +8,17 @@ class ChitonNav(input: List<String>) {
         val queue = caveSpots.toStartQueue(start)
         val checked = mutableListOf<CaveSpot>()
 
-        while(checked.size < caveSpots.size){
-            val current = queue.minBy {  it.value}!!.key
+        while (checked.size < caveSpots.size) {
+            val current = queue.minBy { it.value }!!.key
             checked.add(current)
 
-            current.neighbours().forEach { caveSpot ->
-                if(caveSpot !in checked){
+            current.neighboursIn(caveSpots).forEach { caveSpot ->
+                if (caveSpot !in checked) {
                     val sum = queue.getValue(current) + caveSpot.risk
-                    if(caveSpot.spot == end){
+                    if (caveSpot.spot == end) {
                         return sum
                     }
-                    if(sum<queue.getValue(caveSpot)) queue[caveSpot] = sum
+                    if (sum < queue.getValue(caveSpot)) queue[caveSpot] = sum
                 }
             }
             queue.remove(current)
@@ -35,10 +35,6 @@ class ChitonNav(input: List<String>) {
                 }
             }.toMap().toMutableMap()
 
-    private fun CaveSpot.neighbours() =
-            caveSpots.filter { caveSpot ->
-                caveSpot.spot in this.spot.neighbours()
-            }
 }
 
 private fun List<String>.toCaveSpots() =
@@ -48,11 +44,15 @@ private fun List<String>.toCaveSpots() =
             }
         }.flatten()
 
-
-data class CaveSpot(val spot: Spot, val risk: Int)
+data class CaveSpot(val spot: Spot, val risk: Int) {
+    fun neighboursIn(caveSpots: List<CaveSpot>) =
+            caveSpots.filter { caveSpot ->
+                caveSpot.spot in this.spot.neighbours()
+            }
+}
 
 data class Spot(val x: Int, val y: Int) {
-    fun neighbours() =  listOf(Spot(x-1,y),Spot(x+1,y),Spot(x,y+1),Spot(x,y-1))
+    fun neighbours() = listOf(Spot(x - 1, y), Spot(x + 1, y), Spot(x, y + 1), Spot(x, y - 1))
 }
 
 class DestinationNotFoundException : Throwable()
