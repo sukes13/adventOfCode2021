@@ -23,12 +23,11 @@ class ChitonNav(input: List<String>) {
                     if(sum<queue.getValue(caveSpot)) queue[caveSpot] = sum
                 }
             }
-
             queue.remove(current)
         }
-        return 666
-    }
 
+        throw DestinationNotFoundException()
+    }
 
     private fun MutableMap<Int,CaveSpot>.toStartQueue(start: Spot) =
             this.map { (_, caveSpot) ->
@@ -44,7 +43,6 @@ class ChitonNav(input: List<String>) {
             }
 }
 
-
 private fun List<String>.toCaveSpots() =
         this.mapIndexed { row, line ->
             line.trim().mapIndexed { col, risk ->
@@ -56,5 +54,8 @@ private fun List<String>.toCaveSpots() =
 data class CaveSpot(val id: Int = Random.nextInt(), val spot: Spot, val risk: Int)
 
 data class Spot(val x: Int, val y: Int) {
+
     fun neighbours() =  listOf(Spot(x-1,y),Spot(x+1,y),Spot(x,y+1),Spot(x,y-1))
 }
+
+class DestinationNotFoundException : Throwable()
