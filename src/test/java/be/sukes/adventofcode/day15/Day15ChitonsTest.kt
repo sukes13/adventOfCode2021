@@ -48,13 +48,13 @@ class Day15ChitonsTest {
         assertThat(actual).isEqualTo(315)
     }
 
-//    @Test
-//    fun `chitons - solutionTwo - 2821`() {
-//        val chitonNav = ChitonNav(FileReader().readLines("/day15/chitons.txt"))
-//
-//        val actual = chitonNav.solutionTwo(Spot(0,0), Spot(499,499))
-//
-//        assertThat(actual).isEqualTo(2821)
-//    }
+    @Test
+    fun `chitons - solutionTwo - 2821`() {
+        val chitonNav = ChitonNav(FileReader().readLines("/day15/chitons.txt"))
+
+        val actual = chitonNav.solutionTwo(Spot(0,0), Spot(499,499))
+
+        assertThat(actual).isEqualTo(2821)
+    }
 
 }

@@ -14,7 +14,7 @@ class ChitonNav(input: List<String>) {
         val queue = caveSpots.toStartQueue(start)
 
         while (queue.isNotEmpty()) {
-            val current = queue.minBy { it.value }!!
+            val current = queue.filterNot { it.value == Int.MAX_VALUE }.minBy { it.value }!!
                     .also { queue.remove(it.key) }
 
             current.key.neighboursIn(queue).forEach { (neighbour, risk) ->
