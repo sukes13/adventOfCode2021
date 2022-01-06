@@ -15,7 +15,7 @@ class ChitonNav(input: List<String>) {
 
         while (queue.isNotEmpty()) {
             val current = queue.minBy { it.value }!!
-                    .also { queue.remove(it) }
+                    .also { queue.remove(it.key) }
 
             current.key.neighboursIn(queue).forEach { (neighbour, risk) ->
                 val totalRiskToNeighbour = current.value + neighbour.risk
