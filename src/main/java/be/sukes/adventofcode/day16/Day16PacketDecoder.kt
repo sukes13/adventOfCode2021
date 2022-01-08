@@ -5,14 +5,14 @@ import java.math.BigInteger
 
 class PacketDecoder {
     fun solutionOne(transmission: String): Int {
-        val decodePacket = unpackTransmission(transmission)
-        return decodePacket.allPackets().map { it.version }.sum()
+        val outerPacket = unpackTransmission(transmission)
+        return outerPacket.allPackets().map { it.version }.sum()
     }
 
     fun unpackTransmission(transmission: String): Packet {
-        val decodePacket = decodePacket(transmission)
-        decodePacket.unpack(removeHeaders(transmission))
-        return decodePacket
+        val outerPacket = decodePacket(transmission)
+        outerPacket.unpack(removeHeaders(transmission))
+        return outerPacket
     }
 
     fun decodePacket(transmission: String): Packet {
@@ -30,6 +30,26 @@ class PacketDecoder {
 abstract class Packet(open val version: Int, open val typeID: Int) {
     abstract fun unpack(trans: String): String
     abstract fun allPackets(): List<Packet>
+}
+
+data class ValuePacket(override val version: Int, override val typeID: Int) : Packet(version, typeID) {
+    var value = ""
+
+    override fun unpack(trans: String): String {
+        var keepReading = true
+        var leftover = trans
+
+        while (keepReading) {
+            val group = leftover.take(5)
+                    .also { leftover = leftover.drop(5) }
+            keepReading = group.first().toString() == "1"
+            value += group.substring(1)
+        }
+
+        return leftover
+    }
+
+    override fun allPackets(): List<Packet> = listOf(this)
 }
 
 data class OperatorPacket(override val version: Int, override val typeID: Int) : Packet(version, typeID) {
@@ -77,32 +97,12 @@ data class OperatorPacket(override val version: Int, override val typeID: Int) :
 
     private fun allSubPackets(subs: MutableList<Packet>): List<Packet> {
         return subs.map {
-            if (it is ValuePacket) listOf(it)
-            else {
-                allSubPackets((it as OperatorPacket).subPackets).plus(it)
+            when (it) {
+                is ValuePacket -> listOf(it)
+                else -> allSubPackets((it as OperatorPacket).subPackets).plus(it)
             }
         }.flatten()
     }
-}
-
-data class ValuePacket(override val version: Int, override val typeID: Int) : Packet(version, typeID) {
-    var value = ""
-
-    override fun unpack(trans: String): String {
-        var keepReading = true
-        var leftover = trans
-
-        while (keepReading) {
-            val group = leftover.take(5)
-                    .also { leftover = leftover.drop(5) }
-            keepReading = group.first().toString() == "1"
-            value += group.substring(1)
-        }
-
-        return leftover
-    }
-
-    override fun allPackets(): List<Packet> = listOf(this)
 }
 
 fun String.toBinary(): String {

@@ -18,36 +18,36 @@ class Day16PacketDecoderTest{
 
     @Test
     fun `test trans- unpack value packet - is OK`() {
-        val packet = PacketDecoder().unpackTransmission("110100101111111000101000") as ValuePacket
+        val actual = PacketDecoder().unpackTransmission("110100101111111000101000") as ValuePacket
 
-        assertThat(packet).isEqualTo(ValuePacket(6,4))
-        assertThat(packet.value.toInt(2)).isEqualTo(2021)
+        assertThat(actual).isEqualTo(ValuePacket(6,4))
+        assertThat(actual.value.toInt(2)).isEqualTo(2021)
     }
 
     @Test
     fun `test trans 2 - unpack operator packet - is OK`() {
-        val packet = PacketDecoder().unpackTransmission("00111000000000000110111101000101001010010001001000000000") as OperatorPacket
+        val actual = PacketDecoder().unpackTransmission("00111000000000000110111101000101001010010001001000000000") as OperatorPacket
 
-        assertThat(packet).isEqualTo(OperatorPacket(1,6))
-        assertThat(packet.subPackets).hasSize(2)
-        assertThat(packet.subPackets).containsExactlyInAnyOrder(ValuePacket(6,4),ValuePacket(2,4))
+        assertThat(actual).isEqualTo(OperatorPacket(1,6))
+        assertThat(actual.subPackets).hasSize(2)
+        assertThat(actual.subPackets).containsExactlyInAnyOrder(ValuePacket(6,4),ValuePacket(2,4))
     }
 
     @Test
     fun `test trans 3 - unpack operator packet - is OK`() {
-        val packet = PacketDecoder().unpackTransmission("11101110000000001101010000001100100000100011000001100000") as OperatorPacket
+        val actual = PacketDecoder().unpackTransmission("11101110000000001101010000001100100000100011000001100000") as OperatorPacket
 
-        assertThat(packet).isEqualTo(OperatorPacket(7,3))
-        assertThat(packet.subPackets).hasSize(3)
-        assertThat(packet.subPackets).containsExactlyInAnyOrder(ValuePacket(2,4),ValuePacket(4,4),ValuePacket(1,4))
+        assertThat(actual).isEqualTo(OperatorPacket(7,3))
+        assertThat(actual.subPackets).hasSize(3)
+        assertThat(actual.subPackets).containsExactlyInAnyOrder(ValuePacket(2,4),ValuePacket(4,4),ValuePacket(1,4))
     }
 
     @Test
     fun `test trans 4 - unpack operator packet - is OK`() {
-        val packet = PacketDecoder().unpackTransmission("8A004A801A8002F478".toBinary()) as OperatorPacket
+        val actual = PacketDecoder().unpackTransmission("8A004A801A8002F478".toBinary()) as OperatorPacket
 
-        assertThat(packet).isEqualTo(OperatorPacket(4,2))
-        val subs = packet.subPackets
+        assertThat(actual).isEqualTo(OperatorPacket(4,2))
+        val subs = actual.subPackets
         assertThat(subs).hasSize(1)
         assertThat(subs).containsExactlyInAnyOrder(OperatorPacket(1,2))
         val subs2 = (subs[0] as OperatorPacket).subPackets
