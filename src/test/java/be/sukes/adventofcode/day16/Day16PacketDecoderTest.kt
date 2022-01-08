@@ -62,7 +62,7 @@ class Day16PacketDecoderTest{
     @ParameterizedTest(name = "Trans:  \"{0}\" has versionSum = \"{1}\"")
     @MethodSource("testTransmissions")
     fun `test transmission - solutionOne`(transmission: String, result : Int) {
-        val actual = PacketDecoder().solutionOne(transmission.toBinary2())
+        val actual = PacketDecoder().solutionOne(transmission.toBinary())
 
         assertThat(actual).isEqualTo(result)
     }

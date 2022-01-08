@@ -24,9 +24,7 @@ class PacketDecoder {
     }
 
     private fun headers(transmission: String) =
-            transmission.take(3).toInt(2) to transmission.substring(3, 6).toInt(2)
-
-
+            transmission.take(3).toInt(2) to transmission.toDecimal(3, 6)
 }
 
 abstract class Packet(open val version: Int, open val typeID: Int) {
@@ -37,31 +35,36 @@ abstract class Packet(open val version: Int, open val typeID: Int) {
 data class OperatorPacket(override val version: Int, override val typeID: Int) : Packet(version, typeID) {
     val subPackets = mutableListOf<Packet>()
 
-    override fun unpack(trans: String): String {
-        val lengthTypeID = trans.take(1)
-        if (lengthTypeID == "0") {
-            val numberOfBits = trans.substring(1, 16).toInt(2)
-            var subsString = trans.substring(16, 16 + numberOfBits - 1)
-
-            while (subsString.isNotBlank()) {
-                subsString = addSub(subsString)
+    override fun unpack(trans: String) =
+            when (trans.take(1)) {
+                "0" -> handleTotalLength(trans)
+                "1" -> handleNumberOfPackets(trans)
+                else -> "not impl"
             }
 
-            return if(trans.length >= (16 + numberOfBits)) trans.substring(16 + numberOfBits, trans.length) else("")
-        } else if (lengthTypeID == "1") {
-            var numberOfSubs = trans.substring(1, 12).toInt(2)
-            var subsString = trans.substring(12, trans.length)
+    private fun handleNumberOfPackets(trans: String): String {
+        var numberOfSubs = trans.toDecimal(1, 12)
+        var subsString = trans.substring(12, trans.length)
 
-            while (numberOfSubs > 0) {
-                subsString = addSub(subsString)
-                numberOfSubs--
-            }
-            return subsString
+        while (numberOfSubs > 0) {
+            subsString = addSubPacket(subsString)
+            numberOfSubs--
         }
-        return "not impl"
+        return subsString
     }
 
-    private fun addSub(subsString: String): String {
+    private fun handleTotalLength(trans: String): String {
+        val numberOfBits = trans.toDecimal(1, 16)
+        var subsString = trans.substring(16, 15 + numberOfBits)
+
+        while (subsString.isNotBlank()) {
+            subsString = addSubPacket(subsString)
+        }
+
+        return if (trans.length >= 16 + numberOfBits) trans.substring(16 + numberOfBits, trans.length) else ("")
+    }
+
+    private fun addSubPacket(subsString: String): String {
         val newPacket = PacketDecoder().decodePacket(subsString)
         val leftover = newPacket.unpack(removeHeaders(subsString))
         subPackets.add(newPacket)
@@ -80,7 +83,6 @@ data class OperatorPacket(override val version: Int, override val typeID: Int) :
             }
         }.flatten()
     }
-
 }
 
 data class ValuePacket(override val version: Int, override val typeID: Int) : Packet(version, typeID) {
@@ -103,36 +105,12 @@ data class ValuePacket(override val version: Int, override val typeID: Int) : Pa
     override fun allPackets(): List<Packet> = listOf(this)
 }
 
-fun String.toBinary2(): String {
+fun String.toBinary(): String {
     val length = this.length * 4
     val binary = BigInteger(this, 16).toString(2)
     return (0 until length - binary.length).joinToString("") { "0" } + binary
 }
 
-fun String.toBinary(): String {
-    return this.map { hex ->
-        when (hex) {
-            '0' -> "0000"
-            '1' -> "0001"
-            '2' -> "0010"
-            '3' -> "0011"
-            '4' -> "0100"
-            '5' -> "0101"
-            '6' -> "0110"
-            '7' -> "0111"
-            '8' -> "1000"
-            '9' -> "1001"
-            'A' -> "1010"
-            'B' -> "1011"
-            'C' -> "1100"
-            'D' -> "1101"
-            'E' -> "1110"
-            'F' -> "1111"
-            else -> throw InvalidCharacterFoundException()
-        }
-    }.joinToString("")
-}
-
+private fun String.toDecimal(start: Int, end: Int) = this.substring(start, end).toInt(2)
 private fun removeHeaders(input: String) = input.substring(6, input.length)
 
-class InvalidCharacterFoundException : Throwable()
