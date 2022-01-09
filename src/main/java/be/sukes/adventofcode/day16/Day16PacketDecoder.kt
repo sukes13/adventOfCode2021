@@ -4,10 +4,13 @@ import java.math.BigInteger
 
 
 class PacketDecoder {
-    fun solutionOne(transmission: String): Int {
-        val outerPacket = unpackTransmission(transmission)
-        return outerPacket.allPackets().map { it.version }.sum()
-    }
+    fun solutionOne(transmission: String) =
+            unpackTransmission(transmission).allPackets()
+                    .map { it.version }
+                    .sum()
+
+    fun solutionTwo(transmission: String) =
+            unpackTransmission(transmission).value
 
     fun unpackTransmission(transmission: String): Packet {
         val outerPacket = decodePacket(transmission)
@@ -15,37 +18,39 @@ class PacketDecoder {
         return outerPacket
     }
 
-    fun decodePacket(transmission: String): Packet {
-        val (version, typeID) = headers(transmission)
-        return when (typeID) {
-            4 -> ValuePacket(version, typeID)
-            else -> OperatorPacket(version, typeID)
+    companion object {
+        fun decodePacket(transmission: String): Packet {
+            val (version, typeID) = headers(transmission)
+            return when (typeID) {
+                4 -> ValuePacket(version, typeID)
+                else -> OperatorPacket(version, typeID)
+            }
         }
+        private fun headers(transmission: String) =
+                transmission.take(3).toInt(2) to transmission.toDecimal(3, 6)
     }
-
-    private fun headers(transmission: String) =
-            transmission.take(3).toInt(2) to transmission.toDecimal(3, 6)
 }
 
 abstract class Packet(open val version: Int, open val typeID: Int) {
+    var value = 0L
     abstract fun unpack(trans: String): String
     abstract fun allPackets(): List<Packet>
 }
 
 data class ValuePacket(override val version: Int, override val typeID: Int) : Packet(version, typeID) {
-    var value = ""
-
     override fun unpack(trans: String): String {
         var keepReading = true
         var leftover = trans
+        var binary = ""
 
         while (keepReading) {
             val group = leftover.take(5)
-                    .also { leftover = leftover.drop(5) }
             keepReading = group.first().toString() == "1"
-            value += group.substring(1)
+            binary += group.substring(1)
+            leftover = leftover.drop(5)
         }
 
+        value = binary.toLong(2)
         return leftover
     }
 
@@ -57,12 +62,26 @@ data class OperatorPacket(override val version: Int, override val typeID: Int) :
 
     override fun unpack(trans: String) =
             when (trans.take(1)) {
-                "0" -> handleTotalLength(trans)
-                "1" -> handleNumberOfPackets(trans)
+                "0" -> unpackLengthInBits(trans)
+                "1" -> unpackNumberOfPackets(trans)
                 else -> "not impl"
             }
 
-    private fun handleNumberOfPackets(trans: String): String {
+    override fun allPackets() = allSubPackets(this.subPackets).plus(this)
+
+    private fun unpackLengthInBits(trans: String): String {
+        val lengthInBits = trans.toDecimal(1, 16)
+        var subsString = trans.substring(16, 16 + lengthInBits)
+
+        while (subsString.isNotBlank()) {
+            subsString = addSubPacket(subsString)
+        }
+
+        calculateValue()
+        return if (trans.length >= 16 + lengthInBits) trans.substring(16 + lengthInBits, trans.length) else ("")
+    }
+
+    private fun unpackNumberOfPackets(trans: String): String {
         var numberOfSubs = trans.toDecimal(1, 12)
         var subsString = trans.substring(12, trans.length)
 
@@ -70,36 +89,37 @@ data class OperatorPacket(override val version: Int, override val typeID: Int) :
             subsString = addSubPacket(subsString)
             numberOfSubs--
         }
+
+        calculateValue()
         return subsString
     }
 
-    private fun handleTotalLength(trans: String): String {
-        val numberOfBits = trans.toDecimal(1, 16)
-        var subsString = trans.substring(16, 15 + numberOfBits)
-
-        while (subsString.isNotBlank()) {
-            subsString = addSubPacket(subsString)
+    private fun calculateValue() {
+        val values = subPackets.map { it.value }
+        value = when (typeID) {
+            0 -> values.sum()
+            1 -> values.reduce { acc, i -> acc * i }
+            2 -> values.min()!!
+            3 -> values.max()!!
+            5 -> values.windowed(2).map { (a, b) -> if (a > b) 1L else 0L }.single()
+            6 -> values.windowed(2).map { (a, b) -> if (a < b) 1L else 0L }.single()
+            7 -> values.windowed(2).map { (a, b) -> if (a == b) 1L else 0L }.single()
+            else -> 666
         }
-
-        return if (trans.length >= 16 + numberOfBits) trans.substring(16 + numberOfBits, trans.length) else ("")
     }
 
     private fun addSubPacket(subsString: String): String {
-        val newPacket = PacketDecoder().decodePacket(subsString)
+        val newPacket = PacketDecoder.decodePacket(subsString)
         val leftover = newPacket.unpack(removeHeaders(subsString))
         subPackets.add(newPacket)
         return leftover
     }
 
-    override fun allPackets(): List<Packet> {
-        return allSubPackets(this.subPackets).plus(this)
-    }
-
     private fun allSubPackets(subs: MutableList<Packet>): List<Packet> {
-        return subs.map {
-            when (it) {
-                is ValuePacket -> listOf(it)
-                else -> allSubPackets((it as OperatorPacket).subPackets).plus(it)
+        return subs.map {packet ->
+            when (packet) {
+                is ValuePacket -> listOf(packet)
+                else -> allSubPackets((packet as OperatorPacket).subPackets).plus(packet)
             }
         }.flatten()
     }
