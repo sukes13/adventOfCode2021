@@ -73,9 +73,8 @@ data class OperatorPacket(override val version: Int, override val typeID: Int) :
         val lengthInBits = trans.toDecimal(1, 16)
         var subsString = trans.substring(16, 16 + lengthInBits)
 
-        while (subsString.isNotBlank()) {
+        while (subsString.isNotBlank())
             subsString = addSubPacket(subsString)
-        }
 
         calculateValue()
         return if (trans.length >= 16 + lengthInBits) trans.substring(16 + lengthInBits, trans.length) else ("")
@@ -104,7 +103,7 @@ data class OperatorPacket(override val version: Int, override val typeID: Int) :
             5 -> values.windowed(2).map { (a, b) -> if (a > b) 1L else 0L }.single()
             6 -> values.windowed(2).map { (a, b) -> if (a < b) 1L else 0L }.single()
             7 -> values.windowed(2).map { (a, b) -> if (a == b) 1L else 0L }.single()
-            else -> 666
+            else -> throw InvalidOperationException()
         }
     }
 
@@ -124,6 +123,8 @@ data class OperatorPacket(override val version: Int, override val typeID: Int) :
         }.flatten()
     }
 }
+
+class InvalidOperationException : Throwable()
 
 fun String.toBinary(): String {
     val length = this.length * 4
