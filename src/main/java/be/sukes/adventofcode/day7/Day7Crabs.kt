@@ -37,7 +37,7 @@ class CrabsRecord(crabsString: String) {
                  .sum()
 
     private fun Int.correctFuelCostTo(position: Int) =
-        (0 .. this.distanceTo(position)).map { it + 1 }
+        (0 until this.distanceTo(position)).map { it + 1 }
                                            .sum()
 
     private fun String.toIntArray() =
