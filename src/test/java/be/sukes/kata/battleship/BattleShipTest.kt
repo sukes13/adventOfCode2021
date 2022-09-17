@@ -65,21 +65,16 @@ class Ship(front: Spot, back: Spot) {
     private var parts = toParts(front, back)
 
     fun showParts() = parts
-    fun showHits() = parts.filter { it.isHit }.map { it.spot }
-    fun wasSunk() = parts.all { it.isHit }
+    fun showHits() = parts.hits()
+    fun wasSunk() = parts.allHit()
 
     fun shoot(spot: Spot): Boolean {
         println("Shot fired at: ${spot.first},${spot.second}")
 
-        parts = parts.map { part ->
-            when (part.spot) {
-                spot -> part.copy(isHit = true)
-                else -> part
-            }
-        }.toSet()
+        parts = parts.update(spot)
 
         return parts.any { it.spot == spot }
-                    .also { if(it) println("Ship was hit!!!") }
+                    .also { if (it) println("Ship was hit!!!") }
     }
 
     private fun toParts(front: Spot, back: Spot) =
@@ -89,3 +84,15 @@ class Ship(front: Spot, back: Spot) {
                 }
             }.toSet()
 }
+
+private fun Set<Part>.update(spot: Spot) =
+        this.map { part ->
+            when (part.spot) {
+                spot -> part.copy(isHit = true)
+                else -> part
+            }
+        }.toSet()
+
+private fun Set<Part>.allHit() = all { it.isHit }
+
+private fun Set<Part>.hits() = filter { it.isHit }.map { it.spot }
